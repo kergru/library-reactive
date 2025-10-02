@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+      lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Nicht gefunden - Bibliothek</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/library.min.css}">
+</head>
+<body>
+<!-- Header -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <div class="card shadow">
+        <div class="card-body p-5">
+          <h1 class="display-1 text-danger">404</h1>
+          <h2 class="h4 mb-4">Die angeforderte Ressource wurde nicht gefunden</h2>
+
+          <div th:if="${userName != null}">
+            <p>Der Benutzer mit dem Benutzernamen <strong th:text="${userName}"></strong> konnte nicht gefunden werden.</p>
+          </div>
+
+          <div th:if="${isbn != null}">
+            <p>Das Buch mit der ISBN <strong th:text="${isbn}"></strong> konnte nicht gefunden werden.</p>
+          </div>
+
+          <div class="mt-4">
+            <div th:if="${userId != null and isLibrarian}">
+              <a th:href="@{/library/ui/admin/users}" class="btn btn-primary">Zurück zur Benutzerliste</a>
+            </div>
+            <div th:if="${isbn != null}">
+              <a th:href="@{/library/ui/books}" class="btn btn-primary">Zurück zur Bücherliste</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

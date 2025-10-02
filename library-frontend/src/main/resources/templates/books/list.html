@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="de">
+  <head>
+    <meta charset="UTF-8">
+    <title>Bibliothek - Bücherliste</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/library.min.css}">
+  </head>
+  <body>
+  <!-- Header -->
+  <div th:replace="~{fragments/header :: header}"></div>
+
+  <!-- Hauptinhalt -->
+  <div class="container mt-5">
+    <div class="row mb-4">
+      <div class="col">
+        <h1>Bücher in der Bibliothek</h1>
+      </div>
+    </div>
+
+    <!-- Suchleiste -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <form th:action="@{/library/ui/books}" method="get" class="search-form">
+          <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   id="searchInput"
+                   name="search"
+                   th:value="${param.search}"
+                   placeholder="Suche nach Titel, Autor oder ISBN...">
+            <button class="btn btn-primary" type="submit">
+              Suchen
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bücherliste -->
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+            <tr>
+              <th>Titel</th>
+              <th>Autor</th>
+              <th>ISBN</th>
+              <th>Jahr</th>
+              <th>Sprache</th>
+              <th>Status</th>
+              <th>Details</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="book : ${books}">
+              <td>
+                <a th:href="@{/library/ui/books/{isbn}(isbn=${book.isbn})}"
+                   th:text="${book.title}"
+                   class="text-decoration-none">Buchtitel</a>
+              </td>
+              <td th:text="${book.author}">Autor</td>
+              <td th:text="${book.isbn}">ISBN</td>
+              <td th:text="${book.publishedAt}">Jahr</td>
+              <td th:text="${book.language}">Sprache</td>
+              <td>
+                <span th:if="${book.loanStatus.available}" class="badge bg-success">Verfügbar</span>
+                <span th:unless="${book.loanStatus.available}" class="badge bg-danger">Ausgeliehen</span>
+              </td>
+              <td>
+                <a th:href="@{/library/ui/books/{isbn}(isbn=${book.isbn})}"
+                   class="btn btn-sm btn-outline-primary">
+                  Details
+                </a>
+              </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(books)}">
+              <td colspan="7" class="text-center">
+                <div class="alert alert-info" role="alert">
+                  Keine Bücher gefunden.
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paginierung -->
+    <div class="row mt-4" th:if="${totalPages > 1}">
+      <div class="col">
+        <nav aria-label="Seitennavigation">
+          <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+              <a class="page-link"
+                 th:href="@{/library/ui/books(page=${currentPage - 1}, search=${param.search})}"
+                 tabindex="-1">Zurück</a>
+            </li>
+
+            <li class="page-item"
+                th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${pageNum == currentPage} ? 'active'">
+              <a class="page-link"
+                 th:href="@{/library/ui/books(page=${pageNum}, search=${param.search})}"
+                 th:text="${pageNum + 1}">1</a>
+            </li>
+
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+              <a class="page-link"
+                 th:href="@{/library/ui/books(page=${currentPage + 1}, search=${param.search})}">Weiter</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>

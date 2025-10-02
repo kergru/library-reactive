@@ -1,0 +1,32 @@
+[
+  {
+    "isbn": "12345",
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "publishedAt": 1925,
+    "publisher": "Scribner's",
+    "language": "English",
+    "pages": 180,
+    "description": "A story of decadence and excess in the Jazz Age",
+    "loanStatus": {
+      "available": false,
+      "borrowedBy": 1,
+      "borrowedAt": "2025-09-30T12:00:00Z"
+    }
+  },
+  {
+    "isbn": "67890",
+    "title": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "publishedAt": 1960,
+    "publisher": "J. B. Lippincott & Co.",
+    "language": "English",
+    "pages": 281,
+    "description": "A novel about the serious issues of rape and racial inequality",
+    "loanStatus": {
+      "available": true,
+      "borrowedBy": null,
+      "borrowedAt": null
+    }
+  }
+]

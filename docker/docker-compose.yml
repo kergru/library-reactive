@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpw
+      - MYSQL_DATABASE=keycloak       # initiale DB für Keycloak
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=pwd
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -prootpw || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=pwd
+      - KC_DB=mysql
+      - KC_DB_URL=jdbc:mysql://mysql:3306/keycloak?useSSL=false&allowPublicKeyRetrieval=true
+      - KC_DB_USERNAME=admin
+      - KC_DB_PASSWORD=pwd
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME=localhost
+    command: ["start-dev", "--import-realm"]
+    ports:
+      - "8085:8080"
+    volumes:
+      - ./keycloak-init:/opt/keycloak/data/import
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql_data:

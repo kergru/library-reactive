@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: LibraryFrontend
+
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: library-frontend
+            client-authentication-method: none
+            authorization-grant-type: authorization_code
+            scope: openid, profile, email
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8085/realms/library
+
+library:
+  backend:
+    baseUrl: http://localhost:8081
+
+server:
+  port: 8080

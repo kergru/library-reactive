@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Bibliothek - Benutzerliste</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/library.min.css}">
+</head>
+<body>
+<!-- Header -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<!-- Hauptinhalt -->
+<div class="container mt-5">
+  <div class="row mb-4">
+    <div class="col">
+      <h1>Benutzerliste</h1>
+    </div>
+  </div>
+
+  <!-- Suchleiste -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <form th:action="@{/library/ui/admin/users}" method="get" class="search-form">
+        <div class="input-group">
+          <input type="text"
+                 class="form-control"
+                 id="searchInput"
+                 name="search"
+                 th:value="${param.search}"
+                 placeholder="Suche nach Username, Name oder E-Mail...">
+          <button class="btn btn-primary" type="submit">
+            Suchen
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Benutzerliste -->
+  <div class="row">
+    <div class="col">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th>Username</th>
+            <th>Vollständiger Name</th>
+            <th>E-Mail</th>
+            <th>Details</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="user : ${users}">
+            <td th:text="${user.userName}">user.name</td>
+            <td th:text="${user.getFullName()}">Vorname Nachname</td>
+            <td th:text="${user.email}">user@example.com</td>
+            <td>
+              <a th:href="@{/library/ui/admin/users/{userName}(userName=${user.userName})}"
+                 class="btn btn-sm btn-outline-primary">
+                Details
+              </a>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(users)}">
+            <td colspan="4" class="text-center">
+              <div class="alert alert-info" role="alert">
+                Keine Benutzer gefunden.
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginierung -->
+  <div class="row mt-4" th:if="${totalPages > 1}">
+    <div class="col">
+      <nav aria-label="Seitennavigation">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/library/ui/admin/users(page=${currentPage - 1}, search=${param.search})}"
+               tabindex="-1">Zurück</a>
+          </li>
+
+          <li class="page-item"
+              th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+              th:classappend="${pageNum == currentPage} ? 'active'">
+            <a class="page-link"
+               th:href="@{/library/ui/admin/users(page=${pageNum}, search=${param.search})}"
+               th:text="${pageNum + 1}">1</a>
+          </li>
+
+          <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/library/ui/admin/users(page=${currentPage + 1}, search=${param.search})}">Weiter</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+</body>
+</html>

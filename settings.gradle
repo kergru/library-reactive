@@ -1,0 +1,4 @@
+rootProject.name = 'library-reactive'
+include('library-commons')
+include('library-frontend')
+include('library-backend')
