@@ -124,7 +124,8 @@ public class LibraryControllerIT {
         .exchange()
         .expectStatus().isOk()
         .expectBody(String.class)
-        .value(body -> assertThat(body).contains("demo_user_1"));
+        .value(body -> assertThat(body).contains("demo_user_1"))
+        .value(body -> assertThat(body).contains("The Great Gatsby"));
   }
 
   private OidcLoginMutator createMockOidcLogin(String username) {
