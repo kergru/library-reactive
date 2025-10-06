@@ -1,6 +1,7 @@
 package org.kergru.library.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.kergru.library.util.JwtTestUtils.createMockOidcLoginForLibrarian;
 import static org.kergru.library.util.JwtTestUtils.createMockOidcLoginForUser;
 
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 /**
- * Integration test for the {@link LibraryController}.
+ * Integration test for the {@link LibraryAdminController}.
  * KeyCloak is mocked using mockJwt(), no KeyCloak container required
  * Library Backend is mocked using WireMock
  * Webclient is configured to use a mock JWT
@@ -22,45 +23,62 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 @AutoConfigureWireMock(port=8081)
 @Import(KeycloakTestConfig.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class LibraryControllerIT {
+public class LibraryAdminControllerIT {
 
   @Autowired
   private WebTestClient webTestClient;
 
   @Test
-  void testListAllBooks() {
-    webTestClient
-        .mutateWith(createMockOidcLoginForUser("demo_user_1"))
-        .get()
-        .uri("/library/ui/books")
-        .exchange()
-        .expectStatus().isOk()
-        .expectBody(String.class)
-        .value(body -> assertThat(body).contains("The Great Gatsby"));
-  }
+  void expectListAllUsersWithRoleLibrarianShouldReturnUsers() {
 
-  @Test
-  void testShowBookByIsbn() {
     webTestClient
-        .mutateWith(createMockOidcLoginForUser("demo_user_1"))
+        .mutateWith(createMockOidcLoginForLibrarian("librarian"))
         .get()
-        .uri("/library/ui/books/12345")
-        .exchange()
-        .expectStatus().isOk()
-        .expectBody(String.class)
-        .value(body -> assertThat(body).contains("The Great Gatsby"));
-  }
-
-  @Test
-  void testMeEndpoint() {
-    webTestClient
-        .mutateWith(createMockOidcLoginForUser("demo_user_1"))
-        .get()
-        .uri("/library/ui/me")
-        .exchange()
+        .uri("/library/ui/admin/users").exchange()
         .expectStatus().isOk()
         .expectBody(String.class)
         .value(body -> assertThat(body).contains("demo_user_1"))
-        .value(body -> assertThat(body).contains("The Great Gatsby"));
+        .value(body -> assertThat(body).contains("demo_user_2"))
+        .value(body -> assertThat(body).contains("demo_user_3"));
+  }
+
+  @Test
+  void expectListAllUsersWithNotRoleLibrarianShouldReturnForbidden() {
+
+    webTestClient
+        .mutateWith(createMockOidcLoginForUser("demo_user_1"))
+        .get()
+        .uri("/library/ui/admin/users")
+        .exchange()
+        .expectStatus()
+        .isSeeOther()
+        .expectHeader().valueEquals("Location", "/error/403");
+
+  }
+
+  @Test
+  void expectGetUserWithRoleLibrarianShouldReturnUser() {
+
+    webTestClient
+        .mutateWith(createMockOidcLoginForLibrarian("librarian"))
+        .get()
+        .uri("/library/ui/admin/users/demo_user_1").exchange()
+        .expectStatus()
+        .isOk()
+        .expectBody(String.class)
+        .value(body -> assertThat(body).contains("demo_user_1"));
+  }
+
+  @Test
+  void expectGetUserWithNotRoleLibrarianShouldReturnForbidden() {
+
+    webTestClient
+        .mutateWith(createMockOidcLoginForUser("demo_user_1"))
+        .get()
+        .uri("/library/ui/admin/users/demo_user_2")
+        .exchange()
+        .expectStatus()
+        .isSeeOther()
+        .expectHeader().valueEquals("Location", "/error/403");
   }
 }

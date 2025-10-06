@@ -12,15 +12,15 @@ Even though server-side template rendering does not represent a public client, i
 | **library-commons**      | Shared domain classes, DTOs, and utilities                               |
 | **library-backend**      | Reactive backend service acting as an OAuth2 resource server             |
 | **library-frontend**     | Reactive frontend web application acting as an OAuth2 client (with PKCE) |
-| **Authorization Server** | Keycloak – handles login, issues tokens, exposes JWKS                    |
 
-## Components Overwies
-| Layer                             | Component                                                | Purpose                                                                                                                              |
-| --------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+## Components Overwiev
+| Layer                             | Component                                               | Purpose                                                                                                                              |
+|-----------------------------------|---------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | **Frontend (`library-frontend`)** | Spring Boot WebFlux + Reactive OAuth2 Client (with PKCE) | Authenticates users via OIDC using the Authorization Code Flow with PKCE, then calls the backend using `WebClient` and Bearer Tokens |
-| **Backend (`library-backend`)**   | Spring Boot WebFlux Resource Server                      | Validates incoming JWTs using a `ReactiveJwtDecoder` against the JWKS from the authorization server                                  |
-| **Authorization Server**          | Keycloak                                                 | Performs login, issues Access/ID Tokens, and provides public keys via JWKS                                                           |
-| **User (Browser)**                | Web Client                                               | Interacts with the application and accesses protected data                                                                           |
+| **Backend (`library-backend`)**   | Spring Boot WebFlux Resource Server                     | Validates incoming JWTs using a `ReactiveJwtDecoder` against the JWKS from the authorization server                                  |
+| **Authorization Server** (docker) | Keycloak                                                | Performs login, issues Access/ID Tokens, and provides public keys via JWKS                                                           |
+| **Database** (docker)             | MySQL                                                   | Stores Keycloak and Library data                                                                                                     |~~
+| **User (Browser)**                | Web Client                                              | Interacts with the application and accesses protected data                                                                           |
 
 ## Core Spring Components per Module
 | Module               | Area                     | Key Classes / Beans                                                                                                                             | Purpose                                                                                           |
@@ -37,7 +37,7 @@ Even though server-side template rendering does not represent a public client, i
 ## Flow
 
 ```mermaid
-flowchart TB
+flowchart BT
     %% --- FRONTEND ---
     subgraph FRONTEND["💻 library-frontend (Spring WebFlux + OAuth2 Client + PKCE)"]
     F1["SecurityWebFilterChain + oauth2Login()"]
@@ -83,7 +83,7 @@ flowchart TB
 ## Architecture
 
 ```mermaid
-flowchart TB
+flowchart BT
     %% ===== MODULES =====
     subgraph FRONTEND["💻 library-frontend (Spring Boot WebFlux OAuth2 Client + PKCE + Reactive UI)"]
     FE1["OIDC Login (Authorization Code Flow + PKCE)"]

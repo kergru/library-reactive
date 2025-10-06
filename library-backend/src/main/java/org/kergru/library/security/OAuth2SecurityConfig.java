@@ -20,9 +20,29 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
 
+/**
+ * Configures Spring Security with OAuth2 Login using OpenID Connect (OIDC) and Keycloak integration.
+ *
+ * <p>This configuration sets up:
+ * <ul>
+ *   <li>OAuth2 Login with Keycloak as the identity provider</li>
+ *   <li>Role-based access control (RBAC) with custom role mapping</li>
+ *   <li>Custom success and logout handlers</li>
+ *   <li>CSRF protection configuration</li>
+ *   <li>Exception handling for access denied scenarios</li>
+ * </ul>
+ *
+ * <p>Key Features:
+ * <ul>
+ *   <li><b>OIDC Integration</b>: Authenticates users against a Keycloak server using OpenID Connect</li>
+ *   <li><b>Role Mapping</b>: Maps Keycloak realm roles to Spring Security authorities</li>
+ *   <li><b>Custom Redirects</b>: Redirects users based on their roles after login</li>
+ *   <li><b>Global Logout</b>: Implements single sign-out with Keycloak</li>
+ * </ul>
+ */
 @Configuration
 @EnableReactiveMethodSecurity
-public class SecurityConfig {
+public class OAuth2SecurityConfig {
 
   @Bean
   public SecurityWebFilterChain securityWebFilterChain(

@@ -1,0 +1,32 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/library/api/users"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": [
+      {
+        "userName": "demo_user_1",
+        "firstName": "demo",
+        "lastName": "user1",
+        "email": "demo.user1@example.com"
+      },
+      {
+        "userName": "demo_user_2",
+        "firstName": "demo",
+        "lastName": "user2",
+        "email": "demo.user2@example.com"
+      },
+      {
+        "userName": "demo_user_3",
+        "firstName": "demo",
+        "lastName": "user3",
+        "email": "demo.user3@example.com"
+      }
+    ],
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

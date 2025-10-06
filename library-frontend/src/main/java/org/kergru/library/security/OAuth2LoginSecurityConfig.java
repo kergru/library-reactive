@@ -66,7 +66,8 @@ public class OAuth2LoginSecurityConfig {
         .build();
   }
 
-  private RedirectServerAuthenticationSuccessHandler getLoginSuccessHandler() {
+  @Bean
+  public RedirectServerAuthenticationSuccessHandler getLoginSuccessHandler() {
     return new RedirectServerAuthenticationSuccessHandler() {
       @Override
       public Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {

@@ -16,8 +16,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.security:spring-security-oauth2-jose'
+    testImplementation 'org.springframework.security:spring-security-oauth2-resource-server'
 
-    
     // JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
@@ -28,7 +29,7 @@ dependencies {
     testImplementation 'com.github.dasniko:testcontainers-keycloak:3.8.0'
 
     // WireMock
-    testImplementation 'org.wiremock:wiremock-standalone:3.0.0' //without servlet api
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }

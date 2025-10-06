@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/library/api/users/demo_user_1/loans"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": [
+      {
+        "book": {
+          "isbn": "12345",
+          "title": "The Great Gatsby",
+          "author": "F. Scott Fitzgerald",
+          "publishedAt": 1925,
+          "publisher": "Scribner's",
+          "language": "English",
+          "pages": 180,
+          "description": "A story of decadence and excess in the Jazz Age"
+        },
+        "borrowedAt": "2025-09-30T12:00:00Z",
+        "returnedAt": null
+      }
+    ],
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
