@@ -3,7 +3,6 @@ package org.kergru.library.security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-
 import org.kergru.library.security.logging.JwtLoggingFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -17,11 +17,10 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * Configuration for OAuth2 client, appends Authorization header to requests
- * Robust token handling implementation which also handles token refresh.
+ * Configuration for OAuth2 client, appends Authorization header to requests Robust token handling implementation which also handles token refresh.
  */
 @Configuration
-public class  OAuth2ClientConfig {
+public class OAuth2ClientConfig {
 
   private static final Logger logger = LoggerFactory.getLogger(OAuth2ClientConfig.class);
 

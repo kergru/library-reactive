@@ -1,74 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="de">
-  <head>
-    <meta charset="UTF-8">
-    <title>Benutzerdetails</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/library.min.css}">
-  </head>
-  <body>
-  <!-- Header einbinden -->
-  <div th:replace="~{fragments/header :: header}"></div>
+<head>
+  <meta charset="UTF-8">
+  <title>Benutzerdetails</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/css/library.min.css}">
+</head>
+<body>
+<!-- Header einbinden -->
+<div th:replace="~{fragments/header :: header}"></div>
 
-  <div class="container mt-4">
-    <a th:if="${isLibrarian}" href="/library/ui/admin/users" class="btn btn-secondary mb-4">← Zurück zur Übersicht</a>
+<div class="container mt-4">
+  <a th:if="${isLibrarian}" href="/library/ui/admin/users" class="btn btn-secondary mb-4">← Zurück zur Übersicht</a>
 
-    <!-- Benutzerdaten -->
-    <div class="card mb-4">
-      <div class="card-header">
-        <h4 class="mb-0">Benutzerprofil</h4>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-6">
-            <table class="table table-borderless">
-              <tbody>
-              <tr>
-                <th scope="row" class="w-25">Name:</th>
-                <td th:text="${userWithLoans.user.getFullName()}">Max Mustermann</td>
-              </tr>
-              <tr>
-                <th scope="row">Benutzername:</th>
-                <td th:text="${userWithLoans.user.userName}">maxmuster</td>
-              </tr>
-              <tr>
-                <th scope="row">E-Mail:</th>
-                <td th:text="${userWithLoans.user.email()}">max@example.com</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+  <!-- Benutzerdaten -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h4 class="mb-0">Benutzerprofil</h4>
     </div>
-
-    <!-- Ausgeliehene Bücher -->
-    <div class="card">
-      <div class="card-header">
-        <h4 class="mb-0">Ausgeliehene Bücher</h4>
-      </div>
-      <div class="card-body">
-        <div th:if="${#lists.isEmpty(userWithLoans.loans)}" class="alert alert-info">
-          Keine Bücher ausgeliehen.
-        </div>
-        <div th:unless="${#lists.isEmpty(userWithLoans.loans)}" class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-            <tr>
-              <th>Titel</th>
-              <th>Autor</th>
-              <th>ISBN</th>
-              <th>Borrowed At</th>
-              <th>Returned At</th>
-            </tr>
-            </thead>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <table class="table table-borderless">
             <tbody>
-            <tr th:each="loan : ${userWithLoans.loans}">
-              <td th:text="${loan.book.title()}">Buchtitel</td>
-              <td th:text="${loan.book.author()}">Autor</td>
-              <td th:text="${loan.book.isbn()}">ISBN</td>
-              <td th:text="${loan.getBorrowedAtFormatted()}">Ausgeliehen am</td>
-              <td th:text="${loan.getReturnedAtFormatted()}">Zurückgegeben am</td>
+            <tr>
+              <th scope="row" class="w-25">Name:</th>
+              <td th:text="${userWithLoans.user.getFullName()}">Max Mustermann</td>
+            </tr>
+            <tr>
+              <th scope="row">Benutzername:</th>
+              <td th:text="${userWithLoans.user.userName}">maxmuster</td>
+            </tr>
+            <tr>
+              <th scope="row">E-Mail:</th>
+              <td th:text="${userWithLoans.user.email()}">max@example.com</td>
             </tr>
             </tbody>
           </table>
@@ -76,5 +41,40 @@
       </div>
     </div>
   </div>
-  </body>
+
+  <!-- Ausgeliehene Bücher -->
+  <div class="card">
+    <div class="card-header">
+      <h4 class="mb-0">Ausgeliehene Bücher</h4>
+    </div>
+    <div class="card-body">
+      <div th:if="${#lists.isEmpty(userWithLoans.loans)}" class="alert alert-info">
+        Keine Bücher ausgeliehen.
+      </div>
+      <div th:unless="${#lists.isEmpty(userWithLoans.loans)}" class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th>Titel</th>
+            <th>Autor</th>
+            <th>ISBN</th>
+            <th>Borrowed At</th>
+            <th>Returned At</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="loan : ${userWithLoans.loans}">
+            <td th:text="${loan.book.title()}">Buchtitel</td>
+            <td th:text="${loan.book.author()}">Autor</td>
+            <td th:text="${loan.book.isbn()}">ISBN</td>
+            <td th:text="${loan.getBorrowedAtFormatted()}">Ausgeliehen am</td>
+            <td th:text="${loan.getReturnedAtFormatted()}">Zurückgegeben am</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
 </html>

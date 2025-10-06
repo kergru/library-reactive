@@ -1,4 +1,5 @@
 # Library Reactive Stack – Example Implementation for OAuth2 Authentication (with PKCE)
+
 This project is a reactive library management system built with Spring WebFlux, Spring Security (Reactive), and OAuth2 / OpenID Connect.
 It demonstrates a non-blocking architecture using the Authorization Code Flow with PKCE, backed by Keycloak as the identity provider.
 
@@ -7,24 +8,27 @@ Although this example implementation uses Reactive WebFlux, it still renders blo
 Even though server-side template rendering does not represent a public client, it is nevertheless treated as a public client by enabling PKCE.
 
 ## Project Structure (MonoRepo)
-| Module                   | Description                                                              |
-| ------------------------ | ------------------------------------------------------------------------ |
-| **library-commons**      | Shared domain classes, DTOs, and utilities                               |
-| **library-backend**      | Reactive backend service acting as an OAuth2 resource server             |
-| **library-frontend**     | Reactive frontend web application acting as an OAuth2 client (with PKCE) |
+
+| Module               | Description                                                              |
+|----------------------|--------------------------------------------------------------------------|
+| **library-commons**  | Shared domain classes, DTOs, and utilities                               |
+| **library-backend**  | Reactive backend service acting as an OAuth2 resource server             |
+| **library-frontend** | Reactive frontend web application acting as an OAuth2 client (with PKCE) |
 
 ## Components Overwiev
-| Layer                             | Component                                               | Purpose                                                                                                                              |
-|-----------------------------------|---------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
+
+| Layer                             | Component                                                | Purpose                                                                                                                              |
+|-----------------------------------|----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
 | **Frontend (`library-frontend`)** | Spring Boot WebFlux + Reactive OAuth2 Client (with PKCE) | Authenticates users via OIDC using the Authorization Code Flow with PKCE, then calls the backend using `WebClient` and Bearer Tokens |
-| **Backend (`library-backend`)**   | Spring Boot WebFlux Resource Server                     | Validates incoming JWTs using a `ReactiveJwtDecoder` against the JWKS from the authorization server                                  |
-| **Authorization Server** (docker) | Keycloak                                                | Performs login, issues Access/ID Tokens, and provides public keys via JWKS                                                           |
-| **Database** (docker)             | MySQL                                                   | Stores Keycloak and Library data                                                                                                     |~~
-| **User (Browser)**                | Web Client                                              | Interacts with the application and accesses protected data                                                                           |
+| **Backend (`library-backend`)**   | Spring Boot WebFlux Resource Server                      | Validates incoming JWTs using a `ReactiveJwtDecoder` against the JWKS from the authorization server                                  |
+| **Authorization Server** (docker) | Keycloak                                                 | Performs login, issues Access/ID Tokens, and provides public keys via JWKS                                                           |
+| **Database** (docker)             | MySQL                                                    | Stores Keycloak and Library data                                                                                                     |~~
+| **User (Browser)**                | Web Client                                               | Interacts with the application and accesses protected data                                                                           |
 
 ## Core Spring Components per Module
+
 | Module               | Area                     | Key Classes / Beans                                                                                                                             | Purpose                                                                                           |
-| -------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+|----------------------|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
 | **library-frontend** | **Security (Reactive)**  | `SecurityWebFilterChain` (with `.oauth2Login()` + PKCE),<br>`ReactiveClientRegistrationRepository`,<br>`ServerOAuth2AuthorizedClientRepository` | Handles OIDC login with PKCE, stores tokens reactively within the `ReactiveSecurityContextHolder` |
 |                      | **Web / Controller**     | `@Controller`, `@GetMapping`, `Mono<Rendering>`                                                                                                 | Renders HTML using Thymeleaf Reactive or returns JSON responses                                   |
 |                      | **Service / API Calls**  | `WebClient` + `ServerOAuth2AuthorizedClientExchangeFilterFunction`                                                                              | Calls the `library-backend` API reactively using Bearer Tokens                                    |
@@ -38,57 +42,57 @@ Even though server-side template rendering does not represent a public client, i
 
 ```mermaid
 flowchart BT
-    %% --- FRONTEND ---
+%% --- FRONTEND ---
     subgraph FRONTEND["💻 library-frontend (Spring WebFlux + OAuth2 Client + PKCE)"]
-    F1["SecurityWebFilterChain + oauth2Login()"]
-    F2["WebClient (mit OAuth2AuthorizedClient)"]
-    F3["Thymeleaf"]
-    F4["PKCE: code_challenge, code_verifier"]
+        F1["SecurityWebFilterChain + oauth2Login()"]
+        F2["WebClient (mit OAuth2AuthorizedClient)"]
+        F3["Thymeleaf"]
+        F4["PKCE: code_challenge, code_verifier"]
     end
 
-    %% --- BACKEND ---
+%% --- BACKEND ---
     subgraph BACKEND["⚙️ library-backend (Spring WebFlux Resource Server)"]
         B1["SecurityWebFilterChain + oauth2ResourceServer().jwt()"]
         B2["ReactiveJwtDecoder (Nimbus)"]
         B3["Reactive Controllers (/api/books, /api/users)"]
     end
 
-    %% --- AUTH SERVER ---
+%% --- AUTH SERVER ---
     subgraph AUTH["🛡️ Authorization Server (Keycloak)"]
         A1["/authorize (mit PKCE)"]
         A2["/token (verifiziert code_verifier)"]
         A3["/.well-known/jwks.json"]
     end
 
-    %% --- USER ---
+%% --- USER ---
     subgraph USER["👤 Benutzer / Browser"]
         U1["Browser"]
     end
 
-    %% --- FLOWS ---
-    U1 -->|"1️⃣ GET /books"| FRONTEND
-    FRONTEND -->|"2️⃣ Redirect /authorize (mit code_challenge)"| AUTH
-    AUTH -->|"3️⃣ Login"| U1
-    AUTH -->|"4️⃣ Authorization Code"| FRONTEND
-    FRONTEND -->|"5️⃣ POST /token (mit code_verifier)"| AUTH
-    AUTH -->|"6️⃣ Access/ID Token"| FRONTEND
-    FRONTEND -->|"7️⃣ WebClient -> /api/books (Bearer Token)"| BACKEND
-    BACKEND -->|"8️⃣ Validate JWT via JWKS"| AUTH
-    BACKEND -->|"9️⃣ JSON Books"| FRONTEND
-    FRONTEND -->|"🏁 Render Thymeleaf Templates"| U1
-
-    classDef comp fill:#f6f8fa,stroke:#ccc,stroke-width:1px,rx:8px,ry:8px;
-    class FRONTEND,BACKEND,AUTH comp;
+%% --- FLOWS ---
+    U1 -->|" 1️⃣ GET /books "| FRONTEND
+    FRONTEND -->|" 2️⃣ Redirect /authorize (mit code_challenge) "| AUTH
+    AUTH -->|" 3️⃣ Login "| U1
+    AUTH -->|" 4️⃣ Authorization Code "| FRONTEND
+    FRONTEND -->|" 5️⃣ POST /token (mit code_verifier) "| AUTH
+    AUTH -->|" 6️⃣ Access/ID Token "| FRONTEND
+    FRONTEND -->|" 7️⃣ WebClient -> /api/books (Bearer Token) "| BACKEND
+    BACKEND -->|" 8️⃣ Validate JWT via JWKS "| AUTH
+    BACKEND -->|" 9️⃣ JSON Books "| FRONTEND
+    FRONTEND -->|" 🏁 Render Thymeleaf Templates "| U1
+    classDef comp fill: #f6f8fa, stroke: #ccc, stroke-width: 1px, rx: 8px, ry: 8px;
+    class FRONTEND, BACKEND, AUTH comp;
 ```
+
 ## Architecture
 
 ```mermaid
 flowchart BT
-    %% ===== MODULES =====
+%% ===== MODULES =====
     subgraph FRONTEND["💻 library-frontend (Spring Boot WebFlux OAuth2 Client + PKCE + Reactive UI)"]
-    FE1["OIDC Login (Authorization Code Flow + PKCE)"]
-    FE2["Thymeleaf Rendering"]
-    FE3["WebClient (Reactive, with Bearer Token)"]
+        FE1["OIDC Login (Authorization Code Flow + PKCE)"]
+        FE2["Thymeleaf Rendering"]
+        FE3["WebClient (Reactive, with Bearer Token)"]
     end
 
     subgraph BACKEND["⚙️ library-backend (Spring Boot WebFlux Resource Server)"]
@@ -106,16 +110,15 @@ flowchart BT
         U1["Browser"]
     end
 
-    %% ===== CONNECTIONS =====
-    U1 -->|"HTTP: GET /books"| FRONTEND
-    FRONTEND -->|"OIDC Redirect: /authorize (with code_challenge)"| AUTH
-    AUTH -->|"Authorization Code + Tokens (Access/ID)"| FRONTEND
-    FRONTEND -->|"Reactive REST Call: GET /api/books\nAuthorization: Bearer <token>"| BACKEND
-    BACKEND -->|"JWT validation via JWKS"| AUTH
-    BACKEND -->|"JSON Response (books, users, etc.)"| FRONTEND
-    FRONTEND -->|"Renders Thymeleaf"| U1
-
-    %% ===== STYLES =====
-    classDef comp fill:#f6f8fa,stroke:#aaa,stroke-width:1px,rx:8px,ry:8px;
-    class FRONTEND,BACKEND,AUTH comp;
+%% ===== CONNECTIONS =====
+    U1 -->|" HTTP: GET /books "| FRONTEND
+    FRONTEND -->|" OIDC Redirect: /authorize (with code_challenge) "| AUTH
+    AUTH -->|" Authorization Code + Tokens (Access/ID) "| FRONTEND
+    FRONTEND -->|" Reactive REST Call: GET /api/books\nAuthorization: Bearer <token> "| BACKEND
+    BACKEND -->|" JWT validation via JWKS "| AUTH
+    BACKEND -->|" JSON Response (books, users, etc.) "| FRONTEND
+    FRONTEND -->|" Renders Thymeleaf "| U1
+%% ===== STYLES =====
+    classDef comp fill: #f6f8fa, stroke: #aaa, stroke-width: 1px, rx: 8px, ry: 8px;
+    class FRONTEND, BACKEND, AUTH comp;
 ```

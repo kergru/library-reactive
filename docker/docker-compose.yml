@@ -15,7 +15,7 @@ services:
       - mysql_data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -prootpw || exit 1"]
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -prootpw || exit 1" ]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -32,7 +32,7 @@ services:
       - KC_DB_PASSWORD=pwd
       - KC_HTTP_ENABLED=true
       - KC_HOSTNAME=localhost
-    command: ["start-dev", "--import-realm"]
+    command: [ "start-dev", "--import-realm" ]
     ports:
       - "8085:8080"
     volumes:

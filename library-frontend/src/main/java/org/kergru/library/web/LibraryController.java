@@ -31,7 +31,7 @@ public class LibraryController {
     if (user != null) {
       Map<String, Object> realmAccess = (Map<String, Object>) user.getClaims().get("realm_access");
       model.addAttribute("isLibrarian",
-          realmAccess != null && ((List<String>)realmAccess.get("roles")).contains("LIBRARIAN"));
+          realmAccess != null && ((List<String>) realmAccess.get("roles")).contains("LIBRARIAN"));
       model.addAttribute("userFullName",
           user.getFullName() != null ? user.getFullName() : user.getPreferredUsername());
     }

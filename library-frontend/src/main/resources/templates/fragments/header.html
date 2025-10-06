@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="de">
-  <head>
-    <meta charset="UTF-8">
-  </head>
-  <body>
-  <!-- Fragment Definition -->
-  <header th:fragment="header" class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<!-- Fragment Definition -->
+<header th:fragment="header" class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
       <span class="navbar-brand">
         Bibliothek
       </span>
 
-      <!-- Link to the book list -->
-      <div class="navbar-nav me-auto">
-        <a class="nav-link" th:href="@{/library/ui/books}">Bücherliste</a>
-      </div>
+    <!-- Link to the book list -->
+    <div class="navbar-nav me-auto">
+      <a class="nav-link" th:href="@{/library/ui/books}">Bücherliste</a>
+    </div>
 
-      <!-- Librarian: Link to the user list-->
-      <div th:if="${isLibrarian}" class="navbar-nav me-auto">
-        <a class="nav-link" th:href="@{/library/ui/admin/users}">Benutzerliste</a>
-      </div>
+    <!-- Librarian: Link to the user list-->
+    <div th:if="${isLibrarian}" class="navbar-nav me-auto">
+      <a class="nav-link" th:href="@{/library/ui/admin/users}">Benutzerliste</a>
+    </div>
 
+    <div class="d-flex align-items-center">
       <div class="d-flex align-items-center">
-        <div class="d-flex align-items-center">
-          <!-- Normal user: Link to the user profile -->
-          <a th:href="@{/library/ui/me}" class="text-light me-3 text-decoration-none"
-             th:unless="${isLibrarian}"
-             th:text="${userFullName}">Benutzername</a>
+        <!-- Normal user: Link to the user profile -->
+        <a th:href="@{/library/ui/me}" class="text-light me-3 text-decoration-none"
+           th:unless="${isLibrarian}"
+           th:text="${userFullName}">Benutzername</a>
 
-          <!-- Logout Button -->
-          <form th:action="@{/logout}" method="post" class="m-0">
-            <button type="submit" class="btn btn-outline-light">Abmelden</button>
-          </form>
-        </div>
+        <!-- Logout Button -->
+        <form th:action="@{/logout}" method="post" class="m-0">
+          <button type="submit" class="btn btn-outline-light">Abmelden</button>
+        </form>
       </div>
     </div>
-  </header>
-  </body>
+  </div>
+</header>
+</body>
 </html>

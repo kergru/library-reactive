@@ -36,9 +36,9 @@ public class BookService {
         b.getPages(),
         b.getDescription(),
         new LoanStatusDto(
-          b.getLoanId() != null,
-          b.getLoanId() != null ? b.getBorrowerId() : null,
-          b.getLoanId() != null ? b.getBorrowedAt() : null
+            b.getLoanId() != null,
+            b.getLoanId() != null ? b.getBorrowerId() : null,
+            b.getLoanId() != null ? b.getBorrowedAt() : null
         )
     );
   }

@@ -6,6 +6,7 @@ public record UserDto(
     String lastName,
     String email
 ) {
+
   public String getFullName() {
     return firstName + " " + lastName;
   }

@@ -20,8 +20,7 @@ public class LibraryBackendClient {
   }
 
   /**
-   * Retrieves all books from the backend.
-   * Using the token relay pattern.
+   * Retrieves all books from the backend. Using the token relay pattern.
    */
   public Mono<List<BookDto>> getAllBooks() {
     return webClient.get()
@@ -30,12 +29,12 @@ public class LibraryBackendClient {
         .onStatus(s -> s.value() == 404, resp -> reactor.core.publisher.Mono.empty())
         .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
             ClientResponse::createException)
-        .bodyToMono(new ParameterizedTypeReference<>() {});
+        .bodyToMono(new ParameterizedTypeReference<>() {
+        });
   }
 
   /**
-   * Retrieves a single book by its ISBN from the backend.
-   * Using the client credentials pattern.
+   * Retrieves a single book by its ISBN from the backend. Using the client credentials pattern.
    */
   public Mono<BookDto> getBookByIsbn(String isbn) {
     return webClient.get()
@@ -54,7 +53,8 @@ public class LibraryBackendClient {
         .onStatus(s -> s.value() == 404, resp -> reactor.core.publisher.Mono.empty())
         .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
             ClientResponse::createException)
-        .bodyToMono(new ParameterizedTypeReference<>() {});
+        .bodyToMono(new ParameterizedTypeReference<>() {
+        });
   }
 
   public Mono<UserDto> getUser(String userName) {

@@ -20,44 +20,109 @@ public class LoanWithBookDto {
   private String description;
 
   // --- Getter / Setter ---
-  public Long getId() { return id; }
-  public void setId(Long id) { this.id = id; }
+  public Long getId() {
+    return id;
+  }
 
-  public Long getUserId() { return userId; }
-  public void setUserId(Long userId) { this.userId = userId; }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-  public Long getBookId() { return bookId; }
-  public void setBookId(Long bookId) { this.bookId = bookId; }
+  public Long getUserId() {
+    return userId;
+  }
 
-  public Instant getBorrowedAt() { return borrowedAt; }
-  public void setBorrowedAt(Instant borrowedAt) { this.borrowedAt = borrowedAt; }
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
 
-  public Instant getReturnedAt() { return returnedAt; }
-  public void setReturnedAt(Instant returnedAt) { this.returnedAt = returnedAt; }
+  public Long getBookId() {
+    return bookId;
+  }
 
-  public String getTitle() { return title; }
-  public void setTitle(String title) { this.title = title; }
+  public void setBookId(Long bookId) {
+    this.bookId = bookId;
+  }
 
-  public String getAuthor() { return author; }
-  public void setAuthor(String author) { this.author = author; }
+  public Instant getBorrowedAt() {
+    return borrowedAt;
+  }
 
-  public String getIsbn() { return isbn; }
-  public void setIsbn(String isbn) { this.isbn = isbn; }
+  public void setBorrowedAt(Instant borrowedAt) {
+    this.borrowedAt = borrowedAt;
+  }
 
-  public String getPublisher() { return publisher; }
-  public void setPublisher(String publisher) { this.publisher = publisher; }
+  public Instant getReturnedAt() {
+    return returnedAt;
+  }
 
-  public Integer getPages() { return pages; }
-  public void setPages(Integer pages) { this.pages = pages; }
+  public void setReturnedAt(Instant returnedAt) {
+    this.returnedAt = returnedAt;
+  }
 
-  public Integer getPublishedAt() { return publishedAt; }
-  public void setPublishedAt(Integer publishedAt) { this.publishedAt = publishedAt; }
+  public String getTitle() {
+    return title;
+  }
 
-  public String getLanguage() { return language; }
-  public void setLanguage(String language) { this.language = language; }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-  public String getDescription() { return description; }
-  public void setDescription(String description) { this.description = description; }
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public String getIsbn() {
+    return isbn;
+  }
+
+  public void setIsbn(String isbn) {
+    this.isbn = isbn;
+  }
+
+  public String getPublisher() {
+    return publisher;
+  }
+
+  public void setPublisher(String publisher) {
+    this.publisher = publisher;
+  }
+
+  public Integer getPages() {
+    return pages;
+  }
+
+  public void setPages(Integer pages) {
+    this.pages = pages;
+  }
+
+  public Integer getPublishedAt() {
+    return publishedAt;
+  }
+
+  public void setPublishedAt(Integer publishedAt) {
+    this.publishedAt = publishedAt;
+  }
+
+  public String getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(String language) {
+    this.language = language;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
   // --- Optional: toString() ---
   @Override

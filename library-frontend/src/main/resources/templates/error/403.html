@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
       lang="de">
 <head>
   <meta charset="UTF-8">
@@ -9,23 +8,23 @@
   <link rel="stylesheet" th:href="@{/css/library.min.css}">
 </head>
 <body class="bg-light">
-  <!-- Header -->
-  <div th:replace="~{fragments/header :: header}"></div>
+<!-- Header -->
+<div th:replace="~{fragments/header :: header}"></div>
 
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8 text-center">
-        <div class="card shadow">
-          <div class="card-body p-5">
-            <h1 class="display-4 text-danger">403 - Zugriff verweigert</h1>
-            <p class="lead">Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.</p>
-            <div class="mt-4">
-              <a th:href="@{/}" class="btn btn-primary">Zur Startseite</a>
-            </div>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <div class="card shadow">
+        <div class="card-body p-5">
+          <h1 class="display-4 text-danger">403 - Zugriff verweigert</h1>
+          <p class="lead">Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.</p>
+          <div class="mt-4">
+            <a th:href="@{/}" class="btn btn-primary">Zur Startseite</a>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 </body>
 </html>

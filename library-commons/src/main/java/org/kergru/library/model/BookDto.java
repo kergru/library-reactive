@@ -10,4 +10,6 @@ public record BookDto(
     Integer pages,
     String description,
     LoanStatusDto loanStatus
-) {}
+) {
+
+}

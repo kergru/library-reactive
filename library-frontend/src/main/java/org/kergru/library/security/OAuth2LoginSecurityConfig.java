@@ -38,8 +38,7 @@ public class OAuth2LoginSecurityConfig {
   @Bean
   public SecurityWebFilterChain springSecurityFilterChain(
       ServerHttpSecurity http,
-      ReactiveClientRegistrationRepository clientRegistrationRepository)
-  {
+      ReactiveClientRegistrationRepository clientRegistrationRepository) {
 
     return http
         .authorizeExchange(exchanges -> exchanges
@@ -53,7 +52,8 @@ public class OAuth2LoginSecurityConfig {
         .logout(logout -> logout
             .logoutSuccessHandler(getLogoutSuccessHandler(clientRegistrationRepository))
         )
-        .oauth2Client(withDefaults -> {})
+        .oauth2Client(withDefaults -> {
+        })
         .csrf(CsrfSpec::disable)
         .exceptionHandling(exception -> exception
             .accessDeniedHandler((exchange, ex) -> {
@@ -66,8 +66,7 @@ public class OAuth2LoginSecurityConfig {
         .build();
   }
 
-  @Bean
-  public RedirectServerAuthenticationSuccessHandler getLoginSuccessHandler() {
+  private RedirectServerAuthenticationSuccessHandler getLoginSuccessHandler() {
     return new RedirectServerAuthenticationSuccessHandler() {
       @Override
       public Mono<Void> onAuthenticationSuccess(WebFilterExchange webFilterExchange, Authentication authentication) {
@@ -85,8 +84,7 @@ public class OAuth2LoginSecurityConfig {
     };
   }
 
-  @Bean
-  public ServerLogoutSuccessHandler getLogoutSuccessHandler(
+  private ServerLogoutSuccessHandler getLogoutSuccessHandler(
       ReactiveClientRegistrationRepository repo) {
 
     OidcClientInitiatedServerLogoutSuccessHandler oidcHandler =
@@ -106,14 +104,20 @@ public class OAuth2LoginSecurityConfig {
     );
   }
 
+  /**
+   * Customizes the OidcUser to include roles from the realm_access claim. Spring will detect this bean if defined and include it in the oauth2Login configuration.
+   */
   @Bean
   public ReactiveOAuth2UserService<OidcUserRequest, OidcUser> keycloakOidcUserService() {
     final var delegate = new OidcReactiveOAuth2UserService();
     return (userRequest) -> delegate.loadUser(userRequest).map(oidcUser -> {
+      //log OidcUserService call
+      System.out.println("Response of OidcUserService.loadUser: " + oidcUser);
+
       var authorities = new HashSet<GrantedAuthority>(oidcUser.getAuthorities());
       var realmAccess = oidcUser.<Map<String, Object>>getClaim("realm_access");
       if (realmAccess != null) {
-        @SuppressWarnings( "unchecked")
+        @SuppressWarnings("unchecked")
         var roles = (List<String>) realmAccess.get("roles");
         if (roles != null) {
           roles.stream()

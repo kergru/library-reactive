@@ -6,7 +6,6 @@ import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCo
 import org.springframework.security.oauth2.client.endpoint.ReactiveOAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.WebClientReactiveAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
-import reactor.core.publisher.Mono;
 
 @Configuration
 public class OAuth2TokenDebugConfig {

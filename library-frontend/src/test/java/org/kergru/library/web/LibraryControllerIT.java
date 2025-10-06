@@ -13,13 +13,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 /**
- * Integration test for the {@link LibraryController}.
- * KeyCloak is mocked using mockJwt(), no KeyCloak container required
- * Library Backend is mocked using WireMock
- * Webclient is configured to use a mock JWT
+ * Integration test for the {@link LibraryController}. KeyCloak is mocked using mockJwt(), no KeyCloak container required Library Backend is mocked using WireMock Webclient is
+ * configured to use a mock JWT
  */
 @AutoConfigureWebTestClient
-@AutoConfigureWireMock(port=8081)
+@AutoConfigureWireMock(port = 8081)
 @Import(KeycloakTestConfig.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class LibraryControllerIT {

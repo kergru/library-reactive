@@ -19,10 +19,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
 
 /**
- * Integration test for the {@link LibraryBackendApplication}.
- * KeyCloak is mocked using mockJwt(), no KeyCloak container required
- * MySQL is mocked using Testcontainers
- * Webclient is configured to use a mock JWT
+ * Integration test for the {@link LibraryBackendApplication}. KeyCloak is mocked using mockJwt(), no KeyCloak container required MySQL is mocked using Testcontainers Webclient is
+ * configured to use a mock JWT
  */
 @AutoConfigureWebTestClient
 @Testcontainers

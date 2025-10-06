@@ -6,22 +6,22 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table(name = "books")
 public class BookEntity {
 
-    @Id
-    public Long id;
+  @Id
+  public Long id;
 
-    public String isbn;
+  public String isbn;
 
-    public String title;
+  public String title;
 
-    public String author;
+  public String author;
 
-    public Integer publishedAt;
+  public Integer publishedAt;
 
-    public String publisher;
+  public String publisher;
 
-    public String language;
+  public String language;
 
-    public String description;
+  public String description;
 
-    public Integer pages;
+  public Integer pages;
 }

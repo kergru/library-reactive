@@ -34,8 +34,7 @@ public class UserController {
   }
 
   /**
-   * Returns user profile by userName,
-   * only accessible by the librarian or the user himself
+   * Returns user profile by userName, only accessible by the librarian or the user himself
    */
   @GetMapping("/users/{userName}")
   @PreAuthorize("hasRole('LIBRARIAN') or #userName == authentication.principal.claims['preferred_username']")
@@ -46,8 +45,7 @@ public class UserController {
   }
 
   /**
-   * All borrowed books by a user,
-   * only accessible by the librarian or the user himself
+   * All borrowed books by a user, only accessible by the librarian or the user himself
    */
   @PreAuthorize("hasRole('LIBRARIAN') or #userName == authentication.principal.claims['preferred_username']")
   @GetMapping("/users/{userName}/loans")

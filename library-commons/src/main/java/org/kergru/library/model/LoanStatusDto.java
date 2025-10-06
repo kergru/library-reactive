@@ -6,4 +6,6 @@ public record LoanStatusDto(
     Boolean available,
     Long borrowedBy,
     Instant borrowedAt
-) {}
+) {
+
+}
