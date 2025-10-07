@@ -58,10 +58,12 @@ flowchart TB
     end
 
 %% --- AUTH SERVER ---
-    subgraph AUTH["🛡️ Authorization Server (Keycloak)"]
-        A1["/authorize (mit PKCE)"]
+    subgraph AUTH["🛡️ Authorization Server (Keycloak / OIDC Provider)"]
+        A0["/.well-known/openid-configuration"]
+        A1["/authorize (mit PKCE, scope=openid profile email)"]
         A2["/token (verifiziert code_verifier)"]
-        A3["/.well-known/jwks.json"]
+        A3["/userinfo (Access Token → User Claims)"]
+        A4["/.well-known/jwks.json"]
     end
 
 %% --- USER ---
@@ -75,10 +77,11 @@ flowchart TB
     AUTH -->|"3️⃣ Login"| U1
     AUTH -->|"4️⃣ Authorization Code"| FRONTEND
     FRONTEND -->|"5️⃣ POST /token (mit code_verifier)"| AUTH
-    AUTH -->|"6️⃣ Access/ID Token"| FRONTEND
-    FRONTEND -->|"7️⃣ WebClient → /api/books (Bearer Token)"| BACKEND
-    BACKEND -->|"8️⃣ Validate JWT via JWKS"| AUTH
-    BACKEND -->|"9️⃣ JSON Books"| FRONTEND
+    AUTH -->|"6️⃣ Access Token + ID Token (OIDC)"| FRONTEND
+    FRONTEND -->|"7️⃣ (optional) /userinfo (Bearer Token)"| AUTH
+    FRONTEND -->|"8️⃣ WebClient → /api/books (Bearer Token)"| BACKEND
+    BACKEND -->|"9️⃣ Validate JWT via JWKS"| AUTH
+    BACKEND -->|"🔟 JSON Books"| FRONTEND
     FRONTEND -->|"🏁 Render Thymeleaf Templates"| U1
 
 %% --- STYLING ---
@@ -86,4 +89,5 @@ flowchart TB
     class FRONTEND comp;
     class BACKEND comp;
     class AUTH comp;
+
 ```
