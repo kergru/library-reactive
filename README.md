@@ -38,7 +38,7 @@ Even though server-side template rendering does not represent a public client, i
 |                      | **Data / Service Layer** | `@Service`, `ReactiveCrudRepository`, R2DBC entities                                                                                            | Handles business logic and reactive database access                                               |
 |                      | **Configuration**        | `application.yml` with `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`                                                                  | Defines JWKS URI for token signature validation                                                   |
 
-## Flow
+## Architecture / Flow Diagram
 
 ```mermaid
 flowchart TB
