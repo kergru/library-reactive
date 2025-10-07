@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity.CsrfSpec;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -49,7 +50,7 @@ public class OAuth2SecurityConfig {
       JwtLoggingFilter jwtLoggingFilter) {
 
     return http
-        .csrf(ServerHttpSecurity.CsrfSpec::disable)
+        .csrf(CsrfSpec::disable) // service-to-service communication, token secured
         .addFilterAfter(jwtLoggingFilter, SecurityWebFiltersOrder.AUTHENTICATION)
         .authorizeExchange(exchange -> exchange
             .pathMatchers("/actuator/**").permitAll()

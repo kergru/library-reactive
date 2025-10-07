@@ -12,7 +12,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity.CsrfSpec;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,6 +39,7 @@ public class OAuth2LoginSecurityConfig {
       ServerHttpSecurity http,
       ReactiveClientRegistrationRepository clientRegistrationRepository) {
 
+    //browser-to-service communication with session cookie, csrf per default enabled
     return http
         .authorizeExchange(exchanges -> exchanges
             .pathMatchers("/", "/public/**").permitAll()
@@ -54,7 +54,6 @@ public class OAuth2LoginSecurityConfig {
         )
         .oauth2Client(withDefaults -> {
         })
-        .csrf(CsrfSpec::disable)
         .exceptionHandling(exception -> exception
             .accessDeniedHandler((exchange, ex) -> {
               ServerHttpResponse response = exchange.getResponse();

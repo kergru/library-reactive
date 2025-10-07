@@ -70,18 +70,22 @@ flowchart BT
     end
 
 %% --- FLOWS ---
-    U1 -->|" 1️⃣ GET /books "| FRONTEND
-    FRONTEND -->|" 2️⃣ Redirect /authorize (mit code_challenge) "| AUTH
-    AUTH -->|" 3️⃣ Login "| U1
-    AUTH -->|" 4️⃣ Authorization Code "| FRONTEND
-    FRONTEND -->|" 5️⃣ POST /token (mit code_verifier) "| AUTH
-    AUTH -->|" 6️⃣ Access/ID Token "| FRONTEND
-    FRONTEND -->|" 7️⃣ WebClient -> /api/books (Bearer Token) "| BACKEND
-    BACKEND -->|" 8️⃣ Validate JWT via JWKS "| AUTH
-    BACKEND -->|" 9️⃣ JSON Books "| FRONTEND
-    FRONTEND -->|" 🏁 Render Thymeleaf Templates "| U1
-    classDef comp fill: #f6f8fa, stroke: #ccc, stroke-width: 1px, rx: 8px, ry: 8px;
-    class FRONTEND, BACKEND, AUTH comp;
+    U1 -->|"1️⃣ GET /books"| FRONTEND
+    FRONTEND -->|"2️⃣ Redirect /authorize (mit code_challenge)"| AUTH
+    AUTH -->|"3️⃣ Login"| U1
+    AUTH -->|"4️⃣ Authorization Code"| FRONTEND
+    FRONTEND -->|"5️⃣ POST /token (mit code_verifier)"| AUTH
+    AUTH -->|"6️⃣ Access/ID Token"| FRONTEND
+    FRONTEND -->|"7️⃣ WebClient → /api/books (Bearer Token)"| BACKEND
+    BACKEND -->|"8️⃣ Validate JWT via JWKS"| AUTH
+    BACKEND -->|"9️⃣ JSON Books"| FRONTEND
+    FRONTEND -->|"🏁 Render Thymeleaf Templates"| U1
+
+%% --- STYLING ---
+    classDef comp fill:#f6f8fa,stroke:#ccc,stroke-width:1px,rx:8px,ry:8px;
+    class FRONTEND comp;
+    class BACKEND comp;
+    class AUTH comp;
 ```
 
 ## Architecture
@@ -120,5 +124,7 @@ flowchart BT
     FRONTEND -->|" Renders Thymeleaf "| U1
 %% ===== STYLES =====
     classDef comp fill: #f6f8fa, stroke: #aaa, stroke-width: 1px, rx: 8px, ry: 8px;
-    class FRONTEND, BACKEND, AUTH comp;
+    class FRONTEND comp;
+    class BACKEND comp;
+    class AUTH comp;
 ```
