@@ -41,7 +41,7 @@ Even though server-side template rendering does not represent a public client, i
 ## Flow
 
 ```mermaid
-flowchart BT
+flowchart TB
 %% --- FRONTEND ---
     subgraph FRONTEND["💻 library-frontend (Spring WebFlux + OAuth2 Client + PKCE)"]
         F1["SecurityWebFilterChain + oauth2Login()"]
@@ -83,47 +83,6 @@ flowchart BT
 
 %% --- STYLING ---
     classDef comp fill:#f6f8fa,stroke:#ccc,stroke-width:1px,rx:8px,ry:8px;
-    class FRONTEND comp;
-    class BACKEND comp;
-    class AUTH comp;
-```
-
-## Architecture
-
-```mermaid
-flowchart BT
-%% ===== MODULES =====
-    subgraph FRONTEND["💻 library-frontend (Spring Boot WebFlux OAuth2 Client + PKCE + Reactive UI)"]
-        FE1["OIDC Login (Authorization Code Flow + PKCE)"]
-        FE2["Thymeleaf Rendering"]
-        FE3["WebClient (Reactive, with Bearer Token)"]
-    end
-
-    subgraph BACKEND["⚙️ library-backend (Spring Boot WebFlux Resource Server)"]
-        BE1["JWT Validation (ReactiveJwtDecoder - Nimbus)"]
-        BE2["Protected Reactive REST Endpoints\n/api/books, /api/users"]
-    end
-
-    subgraph AUTH["🛡️ Authorization Server (Keycloak)"]
-        AS1["/authorize (PKCE supported)"]
-        AS2["/token (validates code_verifier)"]
-        AS3["/.well-known/jwks.json (JWKS keys for signature validation)"]
-    end
-
-    subgraph USER["👤 User / Browser"]
-        U1["Browser"]
-    end
-
-%% ===== CONNECTIONS =====
-    U1 -->|" HTTP: GET /books "| FRONTEND
-    FRONTEND -->|" OIDC Redirect: /authorize (with code_challenge) "| AUTH
-    AUTH -->|" Authorization Code + Tokens (Access/ID) "| FRONTEND
-    FRONTEND -->|" Reactive REST Call: GET /api/books\nAuthorization: Bearer <token> "| BACKEND
-    BACKEND -->|" JWT validation via JWKS "| AUTH
-    BACKEND -->|" JSON Response (books, users, etc.) "| FRONTEND
-    FRONTEND -->|" Renders Thymeleaf "| U1
-%% ===== STYLES =====
-    classDef comp fill: #f6f8fa, stroke: #aaa, stroke-width: 1px, rx: 8px, ry: 8px;
     class FRONTEND comp;
     class BACKEND comp;
     class AUTH comp;
