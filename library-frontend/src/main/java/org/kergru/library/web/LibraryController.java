@@ -1,4 +1,3 @@
-// java
 package org.kergru.library.web;
 
 import java.util.List;
@@ -53,6 +52,7 @@ public class LibraryController {
   public Mono<String> listAllBooks(Model model) {
 
     return libraryService.getAllBooks()
+        .collectList()  // Flux<BookDto> -> Mono<List<BookDto>>
         .doOnNext(books -> model.addAttribute("books", books))
         .thenReturn("books/list");
   }

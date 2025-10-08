@@ -37,6 +37,7 @@ public class LibraryAdminController {
   public Mono<String> listAllUsers(Model model) {
 
     return libraryService.getAllUsers()
+        .collectList()  // Flux<BookDto> -> Mono<List<BookDto>>
         .doOnNext(users -> model.addAttribute("users", users))
         .thenReturn("users/list");
   }

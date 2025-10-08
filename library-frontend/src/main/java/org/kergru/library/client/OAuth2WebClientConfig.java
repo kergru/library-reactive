@@ -1,7 +1,6 @@
 package org.kergru.library.client;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kergru.library.client.logging.LoggingExchangeFilterFunction;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,20 +9,21 @@ import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
-import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * Configuration for OAuth2 client, appends Authorization header to requests Robust token handling implementation which also handles token refresh.
+ * WebClient configuration with OAuth2 and logging interceptors.
  */
 @Configuration
-public class OAuth2ClientConfig {
+public class OAuth2WebClientConfig {
 
-  private static final Logger logger = LoggerFactory.getLogger(OAuth2ClientConfig.class);
-
+  /**
+   * Responsible for Token Lifecycle Management
+   * Defines supported token flows:
+   * - Authorization Code Flow
+   * - Refresh Token Flow
+   */
   @Bean
   ReactiveOAuth2AuthorizedClientManager authorizedClientManager(
       ReactiveClientRegistrationRepository clientRegistrations,
@@ -42,39 +42,19 @@ public class OAuth2ClientConfig {
     return manager;
   }
 
+  /**
+   * Configures WebClient with OAuth2 and logging interceptors.
+   */
   @Bean
   WebClient oauth2WebClient(
-      ReactiveOAuth2AuthorizedClientManager authorizedClientManager,
+      OAuth2ExchangeFilterFunction oauth2Interceptor,
+      LoggingExchangeFilterFunction loggingInterceptor,
       @Value("${library.backend.baseUrl}") String backendBaseUrl) {
-
-    ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2Filter =
-        new ServerOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
-    oauth2Filter.setDefaultOAuth2AuthorizedClient(true);
-    oauth2Filter.setDefaultClientRegistrationId("keycloak");
-
-    ExchangeFilterFunction logRequest = (clientRequest, next) -> {
-
-      logRequest(clientRequest);
-
-      return next.exchange(clientRequest)
-          .doOnError(error -> logger.error("Failed to send request to " + clientRequest.url(), error));
-    };
 
     return WebClient.builder()
         .baseUrl(backendBaseUrl)
-        .filter(oauth2Filter)
-        .filter(logRequest)
+        .filter(oauth2Interceptor) // interceptor for adding access token
+        .filter(loggingInterceptor) // interceptor for logging
         .build();
-  }
-
-  private static void logRequest(ClientRequest clientRequest) {
-    System.out.println("Outgoing ResourceServer Request to " + clientRequest.url());
-    // Authorization Header auslesen
-    String authHeader = clientRequest.headers().getFirst("Authorization");
-    if (authHeader != null) {
-      System.out.println("Bearer token: " + authHeader);
-    } else {
-      System.out.println("No Authorization header present");
-    }
   }
 }

@@ -1,0 +1,4 @@
+description = 'Library Commons'
+
+apply plugin: 'java-library'
+apply plugin: 'io.spring.dependency-management'

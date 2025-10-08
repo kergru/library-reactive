@@ -15,7 +15,7 @@ Even though server-side template rendering does not represent a public client, i
 | **library-backend**  | Reactive backend service acting as an OAuth2 resource server             |
 | **library-frontend** | Reactive frontend web application acting as an OAuth2 client (with PKCE) |
 
-## Components Overwiev
+## Components Oveview
 
 | Layer                             | Component                                                | Purpose                                                                                                                              |
 |-----------------------------------|----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
