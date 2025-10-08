@@ -12,6 +12,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity.CsrfSpec;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,6 +28,8 @@ import org.springframework.security.web.server.WebFilterExchange;
 import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.security.web.server.savedrequest.NoOpServerRequestCache;
+import org.springframework.security.web.server.util.matcher.NegatedServerWebExchangeMatcher;
+import org.springframework.security.web.server.util.matcher.PathPatternParserServerWebExchangeMatcher;
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
@@ -49,7 +52,9 @@ public class OAuth2LoginSecurityConfig {
         .oauth2Login(oauth2 -> oauth2
             .authenticationSuccessHandler(getLoginSuccessHandler())
         )
+        .csrf(CsrfSpec::disable) // hack cause csrf is also set for logout
         .logout(logout -> logout
+            .logoutUrl("/logout")
             .logoutSuccessHandler(getLogoutSuccessHandler(clientRegistrationRepository))
         )
         .oauth2Client(withDefaults -> {
@@ -88,18 +93,20 @@ public class OAuth2LoginSecurityConfig {
 
     OidcClientInitiatedServerLogoutSuccessHandler oidcHandler =
         new OidcClientInitiatedServerLogoutSuccessHandler(repo);
-    oidcHandler.setPostLogoutRedirectUri("{baseUrl}");
+    oidcHandler.setPostLogoutRedirectUri("http://localhost:8080/login");
 
-    return (exchange, authentication) -> Mono.defer(() ->
-        exchange.getExchange().getSession()
-            .flatMap(WebSession::invalidate)
-            .then(Mono.fromRunnable(() -> exchange.getExchange().getResponse().addCookie(
-                ResponseCookie.from("JSESSIONID", "")
-                    .maxAge(Duration.ZERO)
-                    .path("/")
-                    .build()
-            )))
-            .then(oidcHandler.onLogoutSuccess(exchange, authentication)) // Keycloak-Logout-Redirect
+    return (exchange, authentication) -> Mono.defer(() -> {
+      System.out.println("Logout success handler");
+          return exchange.getExchange().getSession()
+              .flatMap(WebSession::invalidate)
+              .then(Mono.fromRunnable(() -> exchange.getExchange().getResponse().addCookie(
+                  ResponseCookie.from("JSESSIONID", "")
+                      .maxAge(Duration.ZERO)
+                      .path("/")
+                      .build()
+              )))
+              .then(oidcHandler.onLogoutSuccess(exchange, authentication)); // Keycloak-Logout-Redirect
+        }
     );
   }
 

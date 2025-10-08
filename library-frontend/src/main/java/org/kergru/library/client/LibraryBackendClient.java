@@ -62,7 +62,6 @@ public class LibraryBackendClient {
     return webClient.get()
         .uri("/library/api/users/{userName}", "demo_user_1")
         .exchangeToMono(response -> response.bodyToMono(String.class)
-            .doOnNext(body -> System.out.println("Raw JSON: " + body))
             .flatMap(body -> {
               try {
                 return Mono.justOrEmpty(

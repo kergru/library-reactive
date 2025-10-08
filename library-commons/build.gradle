@@ -2,3 +2,8 @@ description = 'Library Commons'
 
 apply plugin: 'java-library'
 apply plugin: 'io.spring.dependency-management'
+
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+}
