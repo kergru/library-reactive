@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Import;
 @SpringBootTest
 class LibraryFrontendApplicationTests {
 
-
   @Test
   void contextLoads() {
   }
