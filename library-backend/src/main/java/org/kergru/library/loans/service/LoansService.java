@@ -22,7 +22,7 @@ public class LoansService {
     this.userRepository = userRepository;
   }
 
-  public Flux<LoanDto> findBorrowedByUser(String userName) {
+  public Flux<LoanDto> getBorrowedBooksByUser(String userName) {
     return userRepository.findByUsername(userName)
         .switchIfEmpty(Mono.error(new NoSuchElementException("User not found")))
         .flatMapMany(u -> loanRepository.findByUserIdWithBook(u.id))

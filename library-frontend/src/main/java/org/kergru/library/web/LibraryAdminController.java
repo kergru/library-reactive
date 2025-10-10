@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import reactor.core.publisher.Mono;
 
 @Controller
@@ -34,11 +35,15 @@ public class LibraryAdminController {
   }
 
   @GetMapping("/users")
-  public Mono<String> listAllUsers(Model model) {
-
-    return libraryService.getAllUsers()
-        .collectList()  // Flux<BookDto> -> Mono<List<BookDto>>
-        .doOnNext(users -> model.addAttribute("users", users))
+  public Mono<String> searchUsers(
+      Model model,
+      @RequestParam(required = false) String searchString,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "firstName") String sortBy
+  ) {
+    return libraryService.searchUsers(searchString, page, size, sortBy)
+        .doOnNext(users -> model.addAttribute("usersPage", users))
         .thenReturn("users/list");
   }
 

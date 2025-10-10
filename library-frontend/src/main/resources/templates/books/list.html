@@ -24,10 +24,11 @@
     <div class="col-md-6">
       <form th:action="@{/library/ui/books}" method="get" class="search-form">
         <div class="input-group">
+          <label for="searchInput"></label>
           <input type="text"
                  class="form-control"
                  id="searchInput"
-                 name="search"
+                 name="searchString"
                  th:value="${param.search}"
                  placeholder="Suche nach Titel, Autor oder ISBN...">
           <button class="btn btn-primary" type="submit">
@@ -55,7 +56,8 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="book : ${books}">
+          <!-- Liste der Bücher -->
+          <tr th:each="book : ${booksPage.content}">
             <td>
               <a th:href="@{/library/ui/books/{isbn}(isbn=${book.isbn})}"
                  th:text="${book.title}"
@@ -76,7 +78,9 @@
               </a>
             </td>
           </tr>
-          <tr th:if="${#lists.isEmpty(books)}">
+
+          <!-- Leere Liste -->
+          <tr th:if="${booksPage.empty}">
             <td colspan="7" class="text-center">
               <div class="alert alert-info" role="alert">
                 Keine Bücher gefunden.
@@ -90,27 +94,30 @@
   </div>
 
   <!-- Paginierung -->
-  <div class="row mt-4" th:if="${totalPages > 1}">
+  <div class="row mt-4" th:if="${booksPage.totalPages > 1}">
     <div class="col">
       <nav aria-label="Seitennavigation">
         <ul class="pagination justify-content-center">
-          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+          <!-- Zurück -->
+          <li class="page-item" th:classappend="${booksPage.first} ? 'disabled'">
             <a class="page-link"
-               th:href="@{/library/ui/books(page=${currentPage - 1}, search=${param.search})}"
+               th:href="@{/library/ui/books(page=${booksPage.number - 1}, searchString=${param.search})}"
                tabindex="-1">Zurück</a>
           </li>
 
+          <!-- Seiten -->
           <li class="page-item"
-              th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-              th:classappend="${pageNum == currentPage} ? 'active'">
+              th:each="pageNum : ${#numbers.sequence(0, booksPage.totalPages - 1)}"
+              th:classappend="${pageNum == booksPage.number} ? 'active'">
             <a class="page-link"
-               th:href="@{/library/ui/books(page=${pageNum}, search=${param.search})}"
+               th:href="@{/library/ui/books(page=${pageNum}, searchString=${param.search})}"
                th:text="${pageNum + 1}">1</a>
           </li>
 
-          <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+          <!-- Weiter -->
+          <li class="page-item" th:classappend="${booksPage.last} ? 'disabled'">
             <a class="page-link"
-               th:href="@{/library/ui/books(page=${currentPage + 1}, search=${param.search})}">Weiter</a>
+               th:href="@{/library/ui/books(page=${booksPage.number + 1}, searchString=${param.search})}">Weiter</a>
           </li>
         </ul>
       </nav>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import reactor.core.publisher.Mono;
 
 @Controller
@@ -49,16 +50,20 @@ public class LibraryController {
   }
 
   @GetMapping("/books")
-  public Mono<String> listAllBooks(Model model) {
-
-    return libraryService.getAllBooks()
-        .collectList()  // Flux<BookDto> -> Mono<List<BookDto>>
-        .doOnNext(books -> model.addAttribute("books", books))
+  public Mono<String> searchBooks(
+      Model model,
+      @RequestParam(required = false) String searchString,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "5") int size,
+      @RequestParam(defaultValue = "title") String sortBy
+  ) {
+    return libraryService.searchBooks(searchString, page, size, sortBy)
+        .doOnNext(books -> model.addAttribute("booksPage", books))
         .thenReturn("books/list");
   }
 
   @GetMapping("/books/{isbn}")
-  public Mono<String> showBook(@PathVariable String isbn, Model model) {
+  public Mono<String> getBook(@PathVariable String isbn, Model model) {
 
     return libraryService.getBookByIsbn(isbn)
         .flatMap(bookDto -> {

@@ -1,11 +1,12 @@
 package org.kergru.library.books.service;
 
+import java.util.stream.Collectors;
 import org.kergru.library.books.repository.BookRepository;
-import org.kergru.library.books.repository.BookWithLoanDto;
+import org.kergru.library.books.repository.BookWithLoanProjection;
 import org.kergru.library.model.BookDto;
 import org.kergru.library.model.LoanStatusDto;
+import org.kergru.library.model.PageResponseDto;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -17,15 +18,28 @@ public class BookService {
     this.bookRepository = bookRepository;
   }
 
-  public Flux<BookDto> findAll() {
-    return bookRepository.findAllWithLoanStatus().map(BookService::toDto);
+  public Mono<PageResponseDto<BookDto>> searchBooks(String searchStr, int page, int size, String sortBy) {
+
+    return bookRepository.searchBooksPaged(searchStr, page, size, sortBy)
+        .map(p -> new PageResponseDto<>(
+            p.getContent().stream().map(this::toDto).collect(Collectors.toList()),
+            p.getNumber(),
+            p.getSize(),
+            p.getTotalPages(),
+            p.getTotalElements(),
+            p.isFirst(),
+            p.isLast(),
+            p.getNumberOfElements(),
+            p.isEmpty()
+        ));
   }
 
   public Mono<BookDto> findByIsbn(String isbn) {
-    return bookRepository.findByIsbnWithLoan(isbn).map(BookService::toDto);
+    return bookRepository.findByIsbn(isbn).map(this::toDto);
   }
 
-  public static BookDto toDto(BookWithLoanDto b) {
+  private BookDto toDto(BookWithLoanProjection b) {
+
     return new BookDto(
         b.getIsbn(),
         b.getTitle(),
@@ -43,4 +57,3 @@ public class BookService {
     );
   }
 }
-

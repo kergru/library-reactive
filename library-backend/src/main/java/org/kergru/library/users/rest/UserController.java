@@ -2,6 +2,7 @@ package org.kergru.library.users.rest;
 
 import org.kergru.library.loans.service.LoansService;
 import org.kergru.library.model.LoanDto;
+import org.kergru.library.model.PageResponseDto;
 import org.kergru.library.model.UserDto;
 import org.kergru.library.users.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
@@ -27,20 +29,27 @@ public class UserController {
     this.loansService = loansService;
   }
 
+  /**
+   * Returns paged search result of users by userName, firstName, lastName, email
+   */
   @GetMapping("/users")
   @PreAuthorize("hasRole('LIBRARIAN')")
-  public Flux<UserDto> getAllUsers() {
-    return userService.findAll();
+  public Mono<PageResponseDto<UserDto>> searchUsers(
+      @RequestParam(required = false) String searchString,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(defaultValue = "firstName") String sortBy
+  ) {
+    return userService.searchUsers(searchString, page, size, sortBy);
   }
-
   /**
    * Returns user profile by userName, only accessible by the librarian or the user himself
    */
   @GetMapping("/users/{userName}")
   @PreAuthorize("hasRole('LIBRARIAN') or #userName == authentication.principal.claims['preferred_username']")
-  public Mono<UserDto> getUserByUserName(@PathVariable String userName) {
+  public Mono<UserDto> getUser(@PathVariable String userName) {
 
-    return userService.findUserByUserName(userName)
+    return userService.getUser(userName)
         .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")));
   }
 
@@ -51,7 +60,7 @@ public class UserController {
   @GetMapping("/users/{userName}/loans")
   public Flux<LoanDto> getBorrowedBooksByUser(@PathVariable String userName) {
 
-    return loansService.findBorrowedByUser(userName)
+    return loansService.getBorrowedBooksByUser(userName)
         .onErrorMap(e -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
   }
 }

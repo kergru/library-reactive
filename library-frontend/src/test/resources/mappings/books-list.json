@@ -1,44 +1,54 @@
 {
   "request": {
     "method": "GET",
-    "url": "/library/api/books"
+    "url": "/library/api/books?page=0&size=5&sort=title"
   },
   "response": {
     "status": 200,
     "headers": {
       "Content-Type": "application/json"
     },
-    "jsonBody": [
-      {
-        "isbn": "12345",
-        "title": "The Great Gatsby",
-        "author": "F. Scott Fitzgerald",
-        "publishedAt": 1925,
-        "publisher": "Scribner's",
-        "language": "English",
-        "pages": 180,
-        "description": "A story of decadence and excess in the Jazz Age",
-        "loanStatus": {
-          "available": false,
-          "borrowedBy": 1,
-          "borrowedAt": "2025-09-30T12:00:00Z"
+    "jsonBody": {
+      "content": [
+        {
+          "isbn": "12345",
+          "title": "The Great Gatsby",
+          "author": "F. Scott Fitzgerald",
+          "publishedAt": 1925,
+          "publisher": "Scribner's",
+          "language": "English",
+          "pages": 180,
+          "description": "A story of decadence and excess in the Jazz Age",
+          "loanStatus": {
+            "available": false,
+            "borrowedBy": 1,
+            "borrowedAt": "2025-09-30T12:00:00Z"
+          }
+        },
+        {
+          "isbn": "67890",
+          "title": "To Kill a Mockingbird",
+          "author": "Harper Lee",
+          "publishedAt": 1960,
+          "publisher": "J. B. Lippincott & Co.",
+          "language": "English",
+          "pages": 281,
+          "description": "A novel about the serious issues of rape and racial inequality",
+          "loanStatus": {
+            "available": true,
+            "borrowedBy": null,
+            "borrowedAt": null
+          }
         }
-      },
-      {
-        "isbn": "67890",
-        "title": "To Kill a Mockingbird",
-        "author": "Harper Lee",
-        "publishedAt": 1960,
-        "publisher": "J. B. Lippincott & Co.",
-        "language": "English",
-        "pages": 281,
-        "description": "A novel about the serious issues of rape and racial inequality",
-        "loanStatus": {
-          "available": true,
-          "borrowedBy": null,
-          "borrowedAt": null
-        }
-      }
-    ]
+      ],
+      "number": 0,
+      "size": 10,
+      "totalPages": 1,
+      "totalElements": 2,
+      "first": true,
+      "last": true,
+      "numberOfElements": 2,
+      "empty": false
+    }
   }
 }

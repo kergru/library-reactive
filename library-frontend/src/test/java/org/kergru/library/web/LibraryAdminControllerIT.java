@@ -27,7 +27,7 @@ public class LibraryAdminControllerIT {
   private WebTestClient webTestClient;
 
   @Test
-  void expectListAllUsersWithRoleLibrarianShouldReturnUsers() {
+  void expectSearchUsersWithRoleLibrarianShouldReturnUsers() {
 
     webTestClient
         .mutateWith(createMockOidcLoginForLibrarian("librarian"))
@@ -41,7 +41,7 @@ public class LibraryAdminControllerIT {
   }
 
   @Test
-  void expectListAllUsersWithNotRoleLibrarianShouldReturnForbidden() {
+  void expectSearchUsersWithNotRoleLibrarianShouldReturnForbidden() {
 
     webTestClient
         .mutateWith(createMockOidcLoginForUser("demo_user_1"))

@@ -24,10 +24,11 @@
     <div class="col-md-6">
       <form th:action="@{/library/ui/admin/users}" method="get" class="search-form">
         <div class="input-group">
+          <label for="searchInput"></label>
           <input type="text"
                  class="form-control"
                  id="searchInput"
-                 name="search"
+                 name="searchString"
                  th:value="${param.search}"
                  placeholder="Suche nach Username, Name oder E-Mail...">
           <button class="btn btn-primary" type="submit">
@@ -52,9 +53,10 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="user : ${users}">
+          <!-- Benutzerzeilen -->
+          <tr th:each="user : ${usersPage.content}">
             <td th:text="${user.userName}">user.name</td>
-            <td th:text="${user.getFullName()}">Vorname Nachname</td>
+            <td th:text="${user.fullName}">Vorname Nachname</td>
             <td th:text="${user.email}">user@example.com</td>
             <td>
               <a th:href="@{/library/ui/admin/users/{userName}(userName=${user.userName})}"
@@ -63,7 +65,9 @@
               </a>
             </td>
           </tr>
-          <tr th:if="${#lists.isEmpty(users)}">
+
+          <!-- Keine Benutzer gefunden -->
+          <tr th:if="${usersPage.empty}">
             <td colspan="4" class="text-center">
               <div class="alert alert-info" role="alert">
                 Keine Benutzer gefunden.
@@ -77,27 +81,30 @@
   </div>
 
   <!-- Paginierung -->
-  <div class="row mt-4" th:if="${totalPages > 1}">
+  <div class="row mt-4" th:if="${usersPage.totalPages > 1}">
     <div class="col">
       <nav aria-label="Seitennavigation">
         <ul class="pagination justify-content-center">
-          <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+          <!-- Zurück -->
+          <li class="page-item" th:classappend="${usersPage.first} ? 'disabled'">
             <a class="page-link"
-               th:href="@{/library/ui/admin/users(page=${currentPage - 1}, search=${param.search})}"
+               th:href="@{/library/ui/admin/users(page=${usersPage.number - 1}, searchString=${param.search})}"
                tabindex="-1">Zurück</a>
           </li>
 
+          <!-- Seiten -->
           <li class="page-item"
-              th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-              th:classappend="${pageNum == currentPage} ? 'active'">
+              th:each="pageNum : ${#numbers.sequence(0, usersPage.totalPages - 1)}"
+              th:classappend="${pageNum == usersPage.number} ? 'active'">
             <a class="page-link"
-               th:href="@{/library/ui/admin/users(page=${pageNum}, search=${param.search})}"
+               th:href="@{/library/ui/admin/users(page=${pageNum}, searchString=${param.search})}"
                th:text="${pageNum + 1}">1</a>
           </li>
 
-          <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+          <!-- Weiter -->
+          <li class="page-item" th:classappend="${usersPage.last} ? 'disabled'">
             <a class="page-link"
-               th:href="@{/library/ui/admin/users(page=${currentPage + 1}, search=${param.search})}">Weiter</a>
+               th:href="@{/library/ui/admin/users(page=${usersPage.number + 1}, searchString=${param.search})}">Weiter</a>
           </li>
         </ul>
       </nav>

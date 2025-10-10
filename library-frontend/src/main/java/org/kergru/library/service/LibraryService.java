@@ -3,6 +3,7 @@ package org.kergru.library.service;
 import org.kergru.library.client.LibraryBackendClient;
 import org.kergru.library.model.BookDto;
 import org.kergru.library.model.LoanDto;
+import org.kergru.library.model.PageResponseDto;
 import org.kergru.library.model.UserDto;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -17,30 +18,18 @@ public class LibraryService {
     this.backendClient = oauth2WebClient;
   }
 
-  /**
-   * Retrieves all books from the backend.
-   */
-  public Flux<BookDto> getAllBooks() {
-    return backendClient.getAllBooks();
+  public Mono<PageResponseDto<BookDto>> searchBooks(String searchString, int page, int size, String sortBy) {
+    return backendClient.searchBooks(searchString, page, size, sortBy);
   }
 
-  /**
-   * Retrieves a single book by its ISBN.
-   */
   public Mono<BookDto> getBookByIsbn(String isbn) {
     return backendClient.getBookByIsbn(isbn);
   }
 
-  /**
-   * Retrieves all users.
-   */
-  public Flux<UserDto> getAllUsers() {
-    return backendClient.getAllUsers();
+  public Mono<PageResponseDto<UserDto>> searchUsers(String searchString, int page, int size, String sortBy) {
+    return backendClient.searchUsers(searchString, page, size, sortBy);
   }
 
-  /**
-   * Retrieves a single user with his loans.
-   */
   public Mono<UserWithLoans> getUserWithLoans(String userName) {
     return getUser(userName)
         .flatMap(user ->
@@ -52,16 +41,10 @@ public class LibraryService {
                 )));
   }
 
-  /**
-   * Retrieves a single user by userName.
-   */
   public Mono<UserDto> getUser(String userName) {
     return backendClient.getUser(userName);
   }
 
-  /**
-   * Retrieves borrowed books by user.
-   */
   public Flux<LoanDto> getBorrowedBooksOfUser(String userId) {
     return backendClient.getBorrowedBooksOfUser(userId);
   }

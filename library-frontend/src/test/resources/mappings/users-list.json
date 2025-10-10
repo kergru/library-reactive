@@ -1,32 +1,42 @@
 {
   "request": {
     "method": "GET",
-    "url": "/library/api/users"
+    "url": "/library/api/users?page=0&size=10&sort=firstName"
   },
   "response": {
     "status": 200,
-    "jsonBody": [
-      {
-        "userName": "demo_user_1",
-        "firstName": "demo",
-        "lastName": "user1",
-        "email": "demo.user1@example.com"
-      },
-      {
-        "userName": "demo_user_2",
-        "firstName": "demo",
-        "lastName": "user2",
-        "email": "demo.user2@example.com"
-      },
-      {
-        "userName": "demo_user_3",
-        "firstName": "demo",
-        "lastName": "user3",
-        "email": "demo.user3@example.com"
-      }
-    ],
     "headers": {
       "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "content": [
+        {
+          "userName": "demo_user_1",
+          "firstName": "demo",
+          "lastName": "user1",
+          "email": "demo.user1@example.com"
+        },
+        {
+          "userName": "demo_user_2",
+          "firstName": "demo",
+          "lastName": "user2",
+          "email": "demo.user2@example.com"
+        },
+        {
+          "userName": "demo_user_3",
+          "firstName": "demo",
+          "lastName": "user3",
+          "email": "demo.user3@example.com"
+        }
+      ],
+      "number": 0,
+      "size": 20,
+      "totalPages": 1,
+      "totalElements": 3,
+      "first": true,
+      "last": true,
+      "numberOfElements": 3,
+      "empty": false
     }
   }
 }
