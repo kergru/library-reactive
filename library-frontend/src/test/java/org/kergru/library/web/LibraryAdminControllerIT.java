@@ -5,7 +5,7 @@ import static org.kergru.library.util.JwtTestUtils.createMockOidcLoginForLibrari
 import static org.kergru.library.util.JwtTestUtils.createMockOidcLoginForUser;
 
 import org.junit.jupiter.api.Test;
-import org.kergru.library.util.KeycloakTestConfig;
+import org.kergru.library.util.MockOAuthClientConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,7 +19,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
  */
 @AutoConfigureWebTestClient
 @AutoConfigureWireMock(port = 8081)
-@Import(KeycloakTestConfig.class)
+@Import(MockOAuthClientConfig.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class LibraryAdminControllerIT {
 

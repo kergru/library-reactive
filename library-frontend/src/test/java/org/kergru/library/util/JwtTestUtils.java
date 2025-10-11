@@ -12,7 +12,7 @@ public class JwtTestUtils {
    *
    * @return
    */
-  public static OidcLoginMutator createMockOidcLoginForUser(String username) {
+  public static OidcLoginMutator  createMockOidcLoginForUser(String username) {
     return mockOidcLogin()
         .idToken(token -> token
             .claim("sub", username)
