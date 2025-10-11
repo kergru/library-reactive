@@ -62,6 +62,9 @@ public class OAuth2SecurityConfig {
         .build();
   }
 
+  /**
+   * JWT authentication converter that maps the re roles from the JWT token to the Spring Security authorities.
+   */
   private Converter<Jwt, Mono<AbstractAuthenticationToken>> jwtAuthenticationConverter() {
     JwtGrantedAuthoritiesConverter scopesConverter = new JwtGrantedAuthoritiesConverter();
     scopesConverter.setAuthorityPrefix("SCOPE_"); // optional

@@ -13,6 +13,14 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * OAuth2 protected client for the library backend.
+ * Using the token relay pattern.
+ * The token is added to the request headers by the OAuth2 interceptor defined in OAuth2ExchangeFilterFunction
+ *
+ * @see OAuth2ExchangeFilterFunction
+ * @see OAuth2WebClientConfig
+ */
 @Service
 public class LibraryBackendClient {
 
@@ -23,8 +31,7 @@ public class LibraryBackendClient {
   }
 
   /**
-   * Searches books from the backend by given search criteria.
-   * Using the token relay pattern.
+   * Searches books from the backend using pagination.
    */
   public Mono<PageResponseDto<BookDto>> searchBooks(String searchString, int page, int size, String sortBy) {
     return webClient.get()
@@ -49,7 +56,6 @@ public class LibraryBackendClient {
 
   /**
    * Retrieves a single book by its ISBN from the backend.
-   * Using the token relay pattern.
    */
   public Mono<BookDto> getBookByIsbn(String isbn) {
     return webClient.get()
@@ -62,8 +68,7 @@ public class LibraryBackendClient {
   }
 
   /**
-   * Searches users by given search criteria.
-   * Using the token relay pattern.
+   * Searches users from the backend using pagination.
    */
   public Mono<PageResponseDto<UserDto>> searchUsers(String searchString, int page, int size, String sortBy) {
     return webClient.get()
@@ -88,7 +93,6 @@ public class LibraryBackendClient {
 
   /**
    * Retrieves a single book by its ISBN from the backend.
-   * Using the token relay pattern.
    */
   public Mono<UserDto> getUser(String userName) {
     return webClient.get()

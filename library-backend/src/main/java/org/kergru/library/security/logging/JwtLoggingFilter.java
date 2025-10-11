@@ -12,6 +12,9 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+/**
+ * Logging filter for incoming requests to log the JWT token claims.
+ */
 @Component
 public class JwtLoggingFilter implements WebFilter {
 

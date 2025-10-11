@@ -31,7 +31,7 @@ public interface UserRepository extends ReactiveCrudRepository<UserEntity, Long>
     LIMIT :size OFFSET :offset
     """)
   Flux<UserEntity> searchUsers(
-      String searchString,
+      @Param("searchString") String searchString,
       @Param("size") int size,
       @Param("offset") long offset,
       @Param("sortBy") String sortBy

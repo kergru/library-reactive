@@ -7,6 +7,9 @@ import org.springframework.web.server.WebFilterChain;
 import org.thymeleaf.util.StringUtils;
 import reactor.core.publisher.Mono;
 
+/**
+ * Logging filter for incoming requests
+ */
 @Component
 public class LoggingFilter implements WebFilter {
 

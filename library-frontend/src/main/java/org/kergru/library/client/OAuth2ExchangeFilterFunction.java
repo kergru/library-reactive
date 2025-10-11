@@ -10,7 +10,12 @@
   import reactor.core.publisher.Mono;
 
   /**
-   * Interceptor to add access token to requests
+   * Interceptor to add access token to requests.
+   * The token will be retrieved from the OAuth2AuthorizedClientManager.
+   * The token will be added to the request headers using the token relay pattern.
+   *
+   * @see OAuth2WebClientConfig
+   * @see ServerOAuth2AuthorizedClientExchangeFilterFunction
    */
   @Component
   public class OAuth2ExchangeFilterFunction implements ExchangeFilterFunction {

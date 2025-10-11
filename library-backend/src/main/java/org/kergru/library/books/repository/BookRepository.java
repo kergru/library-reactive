@@ -49,7 +49,7 @@ public interface BookRepository extends ReactiveCrudRepository<BookDto, Long> {
     LIMIT :size OFFSET :offset
     """)
   Flux<BookWithLoanProjection> searchBooksWithJoinLoans(
-      String searchString,
+      @Param("searchString") String searchString,
       @Param("size") int size,
       @Param("offset") long offset,
       @Param("sortBy") String sortBy

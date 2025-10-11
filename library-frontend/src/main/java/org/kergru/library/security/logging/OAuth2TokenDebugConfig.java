@@ -7,9 +7,16 @@ import org.springframework.security.oauth2.client.endpoint.ReactiveOAuth2AccessT
 import org.springframework.security.oauth2.client.endpoint.WebClientReactiveAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 
+/**
+ * OAuth2 token debug configuration.
+ * Defines a custom token response client that logs the PKCE process and the access token.
+ */
 @Configuration
 public class OAuth2TokenDebugConfig {
 
+  /**
+   * Custom token response client that logs the access token and its properties.
+   */
   @Bean
   public ReactiveOAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> reactiveTokenResponseClient() {
     WebClientReactiveAuthorizationCodeTokenResponseClient delegate =

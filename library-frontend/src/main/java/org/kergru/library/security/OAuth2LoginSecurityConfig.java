@@ -33,6 +33,10 @@ import org.springframework.security.web.server.savedrequest.NoOpServerRequestCac
 import org.springframework.web.server.WebSession;
 import reactor.core.publisher.Mono;
 
+/**
+ * OAuth2 login security configuration.
+ * Defines OAuth2 login and logout behavior.
+ */
 @Configuration
 @EnableWebFluxSecurity
 public class OAuth2LoginSecurityConfig {
