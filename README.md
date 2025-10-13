@@ -96,7 +96,7 @@ flowchart TB
 ```mermaid
 sequenceDiagram
     participant User
-    participant Frontend as Library-Frontend
+    participant Frontend as Library-Frontend (OAuth2 Client, Thymeleaf)
     participant Auth as Keycloak (Auth Server)
     participant Backend as Library-Backend (Resource Server)
 
@@ -120,18 +120,21 @@ sequenceDiagram
     Auth-->>-Frontend: 10. Returns tokens
     Note left of Auth: - access_token (stored in session)<br>- refresh_token<br>- id_token
 
+    Frontend->>+Frontend: 11. Store tokens in session
+    Frontend-->>-User: 12. Display protected page
+
 %% 2. Protected Resource Access
-    User->>+Frontend: 11. Requests protected page
-    Note left of User: GET /protected-resource<br>Cookie: JSESSIONID=...
+    User->>+Frontend: 13. Requests another protected page
+    Note left of User: GET /library/ui/page<br>Cookie: JSESSIONID=...
 
-    Frontend->>+Frontend: 12. Get access_token from session
-    Frontend->>+Backend: 13. Forward request to backend
-    Note right of Frontend: GET /api/protected-resource<br>Authorization: Bearer <access_token>
+    Frontend->>+Frontend: 14. Get access_token from session
+    Frontend->>+Backend: 15. Request protected resource from backend
+    Note right of Frontend: GET /library/api/resource<br>Authorization: Bearer <access_token>
 
-    Backend->>+Auth: 14. Validate token (JWKS)
-    Auth-->>-Backend: 15. Token info + scopes
+    Backend->>+Auth: 16. Validate token (JWKS)
+    Auth-->>-Backend: 17. Token info + scopes
 
-    Backend-->>-Frontend: 16. Protected data
-    Frontend->>+Frontend: 17. Render Thymeleaf template
-    Frontend-->>-User: 18. Display protected page
+    Backend-->>-Frontend: 18. Send protected data
+    Frontend->>+Frontend: 19. Render Thymeleaf template
+    Frontend-->>-User: 20. Display protected page
 ```
