@@ -100,31 +100,38 @@ sequenceDiagram
     participant Auth as Keycloak (Auth Server)
     participant Backend as Library-Backend (Resource Server)
 
-    User->>+Frontend: 1. Klickt auf Login
-    Frontend->>+Frontend: 2. Generiert code_verifier
-    Frontend->>+Frontend: 3. Erstellt code_challenge (S256)
+%% 1. Login Flow (handled entirely in Frontend)
+    User->>+Frontend: 1. Clicks Login
+    Frontend->>+Frontend: 2. Generate PKCE code_verifier
+    Frontend->>+Frontend: 3. Create code_challenge (S256)
 
-    Frontend->>+Auth: 4. Redirect zu /auth/realms/.../auth
-    Note right of Frontend: Mit:<br>- client_id<br>- response_type=code<br>- code_challenge<br>- code_challenge_method=S256<br>- redirect_uri<br>- state
+    Frontend->>+Auth: 4. Redirect to /auth/realms/.../auth
+    Note right of Frontend: With:<br>- client_id<br>- response_type=code<br>- code_challenge<br>- code_challenge_method=S256<br>- redirect_uri<br>- state
 
-    Auth->>+User: 5. Zeigt Login-Formular
-    User->>+Auth: 6. Gibt Anmeldedaten ein
-    Auth->>+Frontend: 7. Redirect mit Authorization Code
+    Auth->>+User: 5. Shows login form
+    User->>+Auth: 6. Enters credentials
+    Auth->>+Frontend: 7. Redirect with Authorization Code
     Note right of Auth: - code<br>- state
 
-    Frontend->>+Auth: 8. Token-Request
-    Note right of Frontend: POST /token mit:<br>- grant_type=authorization_code<br>- code<br>- redirect_uri<br>- client_id<br>- code_verifier
+    Frontend->>+Auth: 8. Token Request
+    Note right of Frontend: POST /token with:<br>- grant_type=authorization_code<br>- code<br>- redirect_uri<br>- client_id<br>- code_verifier
 
-    Auth->>+Auth: 9. Validiert code_verifier
-    Auth-->>-Frontend: 10. Gibt Tokens zurück
-    Note left of Auth: - access_token<br>- refresh_token<br>- id_token
+    Auth->>+Auth: 9. Validates code_verifier
+    Auth-->>-Frontend: 10. Returns tokens
+    Note left of Auth: - access_token (stored in session)<br>- refresh_token<br>- id_token
 
-    Frontend->>+Backend: 11. API-Request
-    Note right of Frontend: Authorization: Bearer <access_token>
+%% 2. Protected Resource Access
+    User->>+Frontend: 11. Requests protected page
+    Note left of User: GET /protected-resource<br>Cookie: JSESSIONID=...
 
-    Backend->>+Auth: 12. Validiert Token (JWKS)
-    Auth-->>-Backend: 13. Bestätigt Gültigkeit
+    Frontend->>+Frontend: 12. Get access_token from session
+    Frontend->>+Backend: 13. Forward request to backend
+    Note right of Frontend: GET /api/protected-resource<br>Authorization: Bearer <access_token>
 
-    Backend-->>-Frontend: 14. Geschützte Daten
-    Frontend-->>-User: 15. Zeigt Inhalte an
+    Backend->>+Auth: 14. Validate token (JWKS)
+    Auth-->>-Backend: 15. Token info + scopes
+
+    Backend-->>-Frontend: 16. Protected data
+    Frontend->>+Frontend: 17. Render Thymeleaf template
+    Frontend-->>-User: 18. Display protected page
 ```
