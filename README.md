@@ -101,26 +101,30 @@ sequenceDiagram
     participant Backend as Library-Backend (Resource Server)
 
     User->>+Frontend: 1. Klickt auf Login
-    Frontend->>+Auth: 2. Redirect zu /auth/realms/.../protocol/openid-connect/auth
-    Note right of Frontend: Mit client_id, redirect_uri,<br>response_type=code, scope, state
+    Frontend->>+Frontend: 2. Generiert code_verifier
+    Frontend->>+Frontend: 3. Erstellt code_challenge (S256)
 
-    Auth->>+User: 3. Zeigt Login-Formular
-    User->>+Auth: 4. Gibt Anmeldedaten ein
-    Auth->>+Frontend: 5. Redirect mit Authorization Code
-    Note right of Auth: Code und state als URL-Parameter
+    Frontend->>+Auth: 4. Redirect zu /auth/realms/.../auth
+    Note right of Frontend: Mit:<br>- client_id<br>- response_type=code<br>- code_challenge<br>- code_challenge_method=S256<br>- redirect_uri<br>- state
 
-    Frontend->>+Auth: 6. Token-Request mit Code
-    Note right of Frontend: POST /token mit:<br>- code<br>- client_id<br>- client_secret<br>- redirect_uri<br>- grant_type=authorization_code
+    Auth->>+User: 5. Zeigt Login-Formular
+    User->>+Auth: 6. Gibt Anmeldedaten ein
+    Auth->>+Frontend: 7. Redirect mit Authorization Code
+    Note right of Auth: - code<br>- state
 
-    Auth-->>-Frontend: 7. Gibt Tokens zurück
+    Frontend->>+Auth: 8. Token-Request
+    Note right of Frontend: POST /token mit:<br>- grant_type=authorization_code<br>- code<br>- redirect_uri<br>- client_id<br>- code_verifier
+
+    Auth->>+Auth: 9. Validiert code_verifier
+    Auth-->>-Frontend: 10. Gibt Tokens zurück
     Note left of Auth: - access_token<br>- refresh_token<br>- id_token
 
-    Frontend->>+Backend: 8. API-Request mit Access-Token
+    Frontend->>+Backend: 11. API-Request
     Note right of Frontend: Authorization: Bearer <access_token>
 
-    Backend->>+Auth: 9. Validiert Token
-    Auth-->>-Backend: 10. Bestätigt Gültigkeit
+    Backend->>+Auth: 12. Validiert Token (JWKS)
+    Auth-->>-Backend: 13. Bestätigt Gültigkeit
 
-    Backend-->>-Frontend: 11. Geschützte Daten
-    Frontend-->>-User: 12. Zeigt geschützte Inhalte an
+    Backend-->>-Frontend: 14. Geschützte Daten
+    Frontend-->>-User: 15. Zeigt Inhalte an
 ```
