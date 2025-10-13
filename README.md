@@ -15,7 +15,7 @@ Even though server-side template rendering does not represent a public client, i
 | **library-backend**  | Reactive backend service acting as an OAuth2 resource server             |
 | **library-frontend** | Reactive frontend web application acting as an OAuth2 client (with PKCE) |
 
-## Components Oveview
+## Components Overview
 
 | Layer                             | Component                                                | Purpose                                                                                                                              |
 |-----------------------------------|----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------|
@@ -38,7 +38,7 @@ Even though server-side template rendering does not represent a public client, i
 |                      | **Data / Service Layer** | `@Service`, `ReactiveCrudRepository`, R2DBC entities                                                                                            | Handles business logic and reactive database access                                               |
 |                      | **Configuration**        | `application.yml` with `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`                                                                  | Defines JWKS URI for token signature validation                                                   |
 
-## Architecture / Flow Diagram
+## Architecture Diagram
 
 ```mermaid
 flowchart TB
@@ -90,4 +90,37 @@ flowchart TB
     class BACKEND comp;
     class AUTH comp;
 
+```
+## OAuth2 Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend as Library-Frontend
+    participant Auth as Keycloak (Auth Server)
+    participant Backend as Library-Backend (Resource Server)
+
+    User->>+Frontend: 1. Klickt auf Login
+    Frontend->>+Auth: 2. Redirect zu /auth/realms/.../protocol/openid-connect/auth
+    Note right of Frontend: Mit client_id, redirect_uri,<br>response_type=code, scope, state
+
+    Auth->>+User: 3. Zeigt Login-Formular
+    User->>+Auth: 4. Gibt Anmeldedaten ein
+    Auth->>+Frontend: 5. Redirect mit Authorization Code
+    Note right of Auth: Code und state als URL-Parameter
+
+    Frontend->>+Auth: 6. Token-Request mit Code
+    Note right of Frontend: POST /token mit:<br>- code<br>- client_id<br>- client_secret<br>- redirect_uri<br>- grant_type=authorization_code
+
+    Auth-->>-Frontend: 7. Gibt Tokens zurück
+    Note left of Auth: - access_token<br>- refresh_token<br>- id_token
+
+    Frontend->>+Backend: 8. API-Request mit Access-Token
+    Note right of Frontend: Authorization: Bearer <access_token>
+
+    Backend->>+Auth: 9. Validiert Token
+    Auth-->>-Backend: 10. Bestätigt Gültigkeit
+
+    Backend-->>-Frontend: 11. Geschützte Daten
+    Frontend-->>-User: 12. Zeigt geschützte Inhalte an
 ```
