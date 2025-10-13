@@ -36,6 +36,7 @@ public class BookController {
   ) {
     return bookService.searchBooks(searchString, page, size, sortBy);
   }
+
   /**
    * Returns a single book by ISBN
    */

@@ -2,6 +2,7 @@ package org.kergru.library.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kergru.library.util.JwtTestUtils.createMockOidcLoginForUser;
+import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.csrf;
 
 import org.junit.jupiter.api.Test;
 import org.kergru.library.util.MockOAuthClientConfig;
@@ -27,11 +28,11 @@ public class LibraryControllerIT {
   private WebTestClient webTestClient;
 
   @Test
-  void testListAllBooks() {
+  void testSearchBooksShouldReturnBooks() {
     webTestClient
         .mutateWith(createMockOidcLoginForUser("demo_user_1"))
         .get()
-        .uri("/library/ui/books")
+        .uri("/library/ui/books?searchString=The Great Gatsby")
         .exchange()
         .expectStatus().isOk()
         .expectBody(String.class)
@@ -39,7 +40,7 @@ public class LibraryControllerIT {
   }
 
   @Test
-  void testShowBookByIsbn() {
+  void testGetBookByIsbnShouldReturnBook() {
     webTestClient
         .mutateWith(createMockOidcLoginForUser("demo_user_1"))
         .get()
@@ -51,7 +52,7 @@ public class LibraryControllerIT {
   }
 
   @Test
-  void testMeEndpoint() {
+  void expectGetMeShouldReturnAuthenticatedUser() {
     webTestClient
         .mutateWith(createMockOidcLoginForUser("demo_user_1"))
         .get()
@@ -64,9 +65,10 @@ public class LibraryControllerIT {
   }
 
   @Test
-  void expectBorrowBookReturnsLoan() throws Exception {
+  void expectBorrowBookReturnsLoan() {
     webTestClient
         .mutateWith(createMockOidcLoginForUser("demo_user_1"))
+        .mutateWith(csrf())
         .post()
         .uri("/library/ui/me/borrowBook/success-isbn")
         .exchange()
@@ -74,9 +76,10 @@ public class LibraryControllerIT {
   }
 
   @Test
-  void expectBorrowAlreadyBorrowedBookReturnsError() throws Exception {
+  void expectBorrowAlreadyBorrowedBookReturnsConflict() {
     webTestClient
         .mutateWith(createMockOidcLoginForUser("demo_user_1"))
+        .mutateWith(csrf())
         .post()
         .uri("/library/ui/me/borrowBook/conflict-isbn")
         .exchange()
@@ -84,9 +87,10 @@ public class LibraryControllerIT {
   }
 
   @Test
-  void expectReturnBookReturnsOk() throws Exception {
+  void expectReturnBookReturnsOk() {
     webTestClient
         .mutateWith(createMockOidcLoginForUser("demo_user_1"))
+        .mutateWith(csrf())
         .post()
         .uri("/library/ui/me/returnBook/1")
         .exchange()

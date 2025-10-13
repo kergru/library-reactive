@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/library/api/books?page=0&size=5&sort=title"
+    "url": "/library/api/books?page=0&size=5&sort=title&searchString=The%20Great%20Gatsby"
   },
   "response": {
     "status": 200,

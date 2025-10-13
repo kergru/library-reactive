@@ -2,8 +2,10 @@ package org.kergru.library.web;
 
 import java.util.List;
 import java.util.Map;
+import org.kergru.library.client.LibraryBackendClient.BookAlreadyBorrowedException;
 import org.kergru.library.model.LoanDto;
 import org.kergru.library.service.LibraryService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @Controller
@@ -64,7 +67,10 @@ public class LibraryController {
       produces = MediaType.APPLICATION_JSON_VALUE)
   public Mono<LoanDto> borrowBook(@PathVariable String isbn, @AuthenticationPrincipal OidcUser user) {
 
-    return libraryService.borrowBook(isbn, user.getPreferredUsername());
+    return libraryService.borrowBook(isbn, user.getPreferredUsername())
+        .onErrorResume(BookAlreadyBorrowedException.class, e -> {
+          return Mono.error(new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage()));
+        });
   }
 
   /**

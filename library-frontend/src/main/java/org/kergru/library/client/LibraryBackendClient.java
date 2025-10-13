@@ -97,17 +97,12 @@ public class LibraryBackendClient {
    */
   public Mono<UserDto> getUser(String userName) {
     return webClient.get()
-        .uri("/library/api/users/{userName}", "demo_user_1")
-        .exchangeToMono(response -> response.bodyToMono(String.class)
-            .flatMap(body -> {
-              try {
-                return Mono.justOrEmpty(
-                    new ObjectMapper().readValue(body, UserDto.class)
-                );
-              } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-              }
-            }));
+        .uri("/library/api/users/{userName}", userName)
+        .retrieve()
+        .onStatus(s -> s.value() == 404, resp -> reactor.core.publisher.Mono.empty())
+        .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
+            ClientResponse::createException)
+        .bodyToMono(UserDto.class);
   }
 
   public Flux<LoanDto> getBorrowedBooksOfUser(String userName) {
@@ -125,7 +120,7 @@ public class LibraryBackendClient {
         .uri("/library/api/users/{userName}/loans", userName)
         .body(Mono.just(isbn), String.class)
         .retrieve()
-        .onStatus(s -> s.value() == 404, resp -> reactor.core.publisher.Mono.empty())
+        .onStatus(s -> s.value() == 409, resp -> Mono.error(new BookAlreadyBorrowedException(isbn)))
         .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
             ClientResponse::createException)
         .bodyToMono(LoanDto.class);
@@ -136,9 +131,14 @@ public class LibraryBackendClient {
         .delete()
         .uri("/library/api/users/{userName}/loans/{loanId}", userName, loanId)
         .retrieve()
-        .onStatus(s -> s.value() == 404, resp -> reactor.core.publisher.Mono.empty())
         .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
             ClientResponse::createException)
         .bodyToMono(Void.class);
+  }
+
+  public static class BookAlreadyBorrowedException extends RuntimeException {
+    public BookAlreadyBorrowedException(String isbn) {
+      super("Book with isbn " + isbn + " is already borrowed");
+    }
   }
 }

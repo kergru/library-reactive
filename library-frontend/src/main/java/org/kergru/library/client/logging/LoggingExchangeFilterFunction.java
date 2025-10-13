@@ -9,6 +9,9 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeFunction;
 import reactor.core.publisher.Mono;
 
+/**
+ * Logging filter for WebClient to log requests and responses.
+ */
 @Component
 public class LoggingExchangeFilterFunction implements ExchangeFilterFunction {
 

@@ -27,9 +27,9 @@ public class UserController {
 
   private final LoanService loanService;
 
-  public UserController(UserService userService, LoanService loansService) {
+  public UserController(UserService userService, LoanService loanService) {
     this.userService = userService;
-    this.loanService = loansService;
+    this.loanService = loanService;
   }
 
   /**
