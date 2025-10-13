@@ -14,7 +14,6 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.config.web.server.ServerHttpSecurity.CsrfSpec;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -56,7 +55,6 @@ public class OAuth2LoginSecurityConfig {
         .oauth2Login(oauth2 -> oauth2
             .authenticationSuccessHandler(getLoginSuccessHandler())
         )
-        .csrf(CsrfSpec::disable) // hack cause csrf is also set for logout
         .logout(logout -> logout
             .logoutUrl("/logout")
             .logoutSuccessHandler(getLogoutSuccessHandler(clientRegistrationRepository))
@@ -71,7 +69,7 @@ public class OAuth2LoginSecurityConfig {
               return response.setComplete();
             })
         )
-        .addFilterAt(new LoggingFilter(), SecurityWebFiltersOrder.FIRST)
+        .addFilterAt(new LoggingFilter(), SecurityWebFiltersOrder.CSRF)
         .build();
   }
 

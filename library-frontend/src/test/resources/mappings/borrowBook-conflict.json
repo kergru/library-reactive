@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/library/api/users/demo_user_1/loans",
+    "bodyPatterns": [
+      { "equalTo": "conflict-isbn" }
+    ]
+  },
+  "response": {
+    "status": 409,
+    "body": "Book already borrowed"
+  }
+}

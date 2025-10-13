@@ -8,6 +8,7 @@ import org.kergru.library.model.PageResponseDto;
 import org.kergru.library.model.UserDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -117,5 +118,27 @@ public class LibraryBackendClient {
         .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
             ClientResponse::createException)
         .bodyToFlux(LoanDto.class);
+  }
+
+  public Mono<LoanDto> borrowBook(String isbn, String userName) {
+    return webClient.post()
+        .uri("/library/api/users/{userName}/loans", userName)
+        .body(Mono.just(isbn), String.class)
+        .retrieve()
+        .onStatus(s -> s.value() == 404, resp -> reactor.core.publisher.Mono.empty())
+        .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
+            ClientResponse::createException)
+        .bodyToMono(LoanDto.class);
+  }
+
+  public Mono<Void> returnBook(Long loanId, String userName) {
+    return webClient
+        .delete()
+        .uri("/library/api/users/{userName}/loans/{loanId}", userName, loanId)
+        .retrieve()
+        .onStatus(s -> s.value() == 404, resp -> reactor.core.publisher.Mono.empty())
+        .onStatus(s -> s.is4xxClientError() || s.is5xxServerError(),
+            ClientResponse::createException)
+        .bodyToMono(Void.class);
   }
 }

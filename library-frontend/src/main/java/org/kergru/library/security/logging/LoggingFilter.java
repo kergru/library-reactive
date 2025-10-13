@@ -1,5 +1,6 @@
 package org.kergru.library.security.logging;
 
+import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -25,6 +26,12 @@ public class LoggingFilter implements WebFilter {
     var uri = exchange.getRequest().getURI();
     if(StringUtils.contains(uri, "/library/ui")) {
       System.out.println("Incoming request: " + exchange.getRequest().getMethod() + " " + uri);
+      // log X-CSRF-TOKEN from header if exists
+      exchange.getRequest().getHeaders().forEach((key, value) -> {
+        if (key.equals("X-CSRF-TOKEN")) {
+          System.out.println("X-CSRF-TOKEN: " + value);
+        }
+      });
     }
     return chain.filter(exchange);
   }

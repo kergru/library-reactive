@@ -48,4 +48,18 @@ public class LibraryService {
   public Flux<LoanDto> getBorrowedBooksOfUser(String userId) {
     return backendClient.getBorrowedBooksOfUser(userId);
   }
+
+  /**
+   * Borrows a book to a user. Endpoint is only available for the user himself.
+   */
+  public Mono<LoanDto> borrowBook(String isbn, String userName) {
+    return backendClient.borrowBook(isbn, userName);
+  }
+
+  /**
+   * Returns a book to library. Endpoint is only available for the user himself.
+   */
+  public Mono<Void> returnBook(Long loanId, String userName) {
+    return backendClient.returnBook(loanId, userName);
+  }
 }

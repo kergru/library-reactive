@@ -2,7 +2,7 @@ package org.kergru.library.loans.repository;
 
 import java.time.Instant;
 
-public class LoanWithBookDto {
+public class LoanWithBookProjection {
 
   private Long id;
   private Long userId;

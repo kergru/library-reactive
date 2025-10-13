@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 /**
@@ -60,5 +61,35 @@ public class LibraryControllerIT {
         .expectBody(String.class)
         .value(body -> assertThat(body).contains("demo_user_1"))
         .value(body -> assertThat(body).contains("The Great Gatsby"));
+  }
+
+  @Test
+  void expectBorrowBookReturnsLoan() throws Exception {
+    webTestClient
+        .mutateWith(createMockOidcLoginForUser("demo_user_1"))
+        .post()
+        .uri("/library/ui/me/borrowBook/success-isbn")
+        .exchange()
+        .expectStatus().isOk();
+  }
+
+  @Test
+  void expectBorrowAlreadyBorrowedBookReturnsError() throws Exception {
+    webTestClient
+        .mutateWith(createMockOidcLoginForUser("demo_user_1"))
+        .post()
+        .uri("/library/ui/me/borrowBook/conflict-isbn")
+        .exchange()
+        .expectStatus().isEqualTo(HttpStatus.CONFLICT);
+  }
+
+  @Test
+  void expectReturnBookReturnsOk() throws Exception {
+    webTestClient
+        .mutateWith(createMockOidcLoginForUser("demo_user_1"))
+        .post()
+        .uri("/library/ui/me/returnBook/1")
+        .exchange()
+        .expectStatus().isOk();
   }
 }

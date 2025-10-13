@@ -1,0 +1,29 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/library/api/users/demo_user_1/loans",
+    "bodyPatterns": [
+      { "equalTo": "success-isbn" }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "id": 1,
+      "book": {
+        "isbn": "success-isbn",
+        "title": "Clean Code",
+        "author": "Robert C. Martin",
+        "publishedAt": 2008,
+        "publisher": "Prentice Hall",
+        "language": "EN",
+        "description": "Beschreibung Clean Code",
+        "pages": 464
+      },
+      "borrowedAt": "2025-10-11T10:30:00Z"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

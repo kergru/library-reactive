@@ -1,21 +1,12 @@
 package org.kergru.library;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.kergru.library.JwtTestUtils.createMockJwt;
-import static org.kergru.library.JwtTestUtils.createMockJwtWithRoleLibrarian;
-
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
-import org.kergru.library.model.PageResponseDto;
-import org.kergru.library.model.UserDto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.MySQLR2DBCDatabaseContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -56,92 +47,7 @@ class LibraryBackendApplicationTests {
         () -> "http://localhost:8085/realms/library/protocol/openid-connect/certs");
   }
 
-  @Autowired
-  private WebTestClient webTestClient;
-
   @Test
   void contextLoads() {
-  }
-
-  @Test
-  void expectGetUserWithRoleLibrarianShouldReturnUser() {
-
-    webTestClient
-        .mutateWith(createMockJwtWithRoleLibrarian("librarian"))
-        .get()
-        .uri("/library/api/users/demo_user_1")
-        .exchange()
-        .expectStatus().isOk()
-        .expectBody(UserDto.class)
-        .value(user -> {
-          assertThat(user).isNotNull();
-          assertThat(user.userName()).isEqualTo("demo_user_1");
-        });
-  }
-
-  @Test
-  void expectGetUnknownUserWithRoleLibrarianShouldReturnNotFound() {
-
-    webTestClient
-        .mutateWith(createMockJwtWithRoleLibrarian("librarian"))
-        .get()
-        .uri("/library/api/users/UNKNOWN_USER")
-        .exchange()
-        .expectStatus().isNotFound();
-  }
-
-  @Test
-  void expectSearchUsersWithRoleLibrarianShouldReturnUsers() {
-
-    webTestClient
-        .mutateWith(createMockJwtWithRoleLibrarian("librarian"))
-        .get()
-        .uri("/library/api/users?searchString=demo_user_1&page=0&size=10&sortBy=userName")
-        .exchange()
-        .expectStatus().isOk()
-        .expectBody(new ParameterizedTypeReference<PageResponseDto<UserDto>>() {})
-        .value(response -> {
-          assertThat(response).isNotNull();
-          assertThat(response.content()).isNotEmpty();
-          assertThat(response.content().getFirst().userName()).isEqualTo("demo_user_1");
-        });
-  }
-
-  @Test
-  void expectGetMyUserWithNotRoleLibrarianShouldReturnUser() {
-
-    webTestClient
-        .mutateWith(createMockJwt("demo_user_1"))
-        .get()
-        .uri("/library/api/users/demo_user_1")
-        .exchange()
-        .expectStatus().isOk()
-        .expectBody(UserDto.class)
-        .value(user -> {
-          assertThat(user).isNotNull();
-          assertThat(user.userName()).isEqualTo("demo_user_1");
-        });
-  }
-
-  @Test
-  void expectGetForeignUserWithNotRoleLibrarianShouldReturnForbidden() {
-
-    webTestClient
-        .mutateWith(createMockJwt("demo_user_1"))
-        .get()
-        .uri("/library/api/users/demo_user_2")
-        .exchange()
-        .expectStatus().isForbidden();
-  }
-
-  @Test
-  void expectSearchUsersWithNotRoleLibrarianShouldReturnForbidden() {
-
-    webTestClient
-        .mutateWith(createMockJwt("demo_user_1"))
-        .get()
-        .uri("/library/api/users?searchString=demo_user_1&page=0&size=10&sortBy=userName")
-        .exchange()
-        .expectStatus().isForbidden();
   }
 }

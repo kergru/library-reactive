@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public record LoanDto(
+    Long id,
     BookDto book,
     Instant borrowedAt,
     Instant returnedAt

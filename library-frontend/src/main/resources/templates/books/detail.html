@@ -1,7 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+    lang="de">
 <head>
   <meta charset="UTF-8">
+  <meta th:if="${_csrf}" name="_csrf" th:content="${_csrf.token}">
+  <meta th:if="${_csrf}" name="_csrf_header" th:content="${_csrf.headerName}">
   <title th:text="${book.title}">Buchtitel</title>
   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
   <link rel="stylesheet" th:href="@{/css/library.min.css}">
@@ -15,11 +20,12 @@
     <div class="col-md-8 offset-md-2">
       <a href="/library/ui/books" class="btn btn-secondary mb-4">← Zurück zur Übersicht</a>
 
-      <div class="card book-details">
+
+      <div class="card book-details" th:attr="data-isbn=${book.isbn}">>
         <div class="card-header d-flex justify-content-between align-items-center">
           <h1 class="h3 mb-0" th:text="${book.title}">Buchtitel</h1>
-          <span th:if="${book.loanStatus.available}" class="badge bg-success">Verfügbar</span>
-          <span th:unless="${book.loanStatus.available}" class="badge bg-danger">Ausgeliehen</span>
+          <span id="badge-available" th:if="${book.loanStatus.available}" class="badge bg-success">Verfügbar</span>
+          <span id="badge-unavailable" th:unless="${book.loanStatus.available}" class="badge bg-danger">Ausgeliehen</span>
         </div>
 
         <div class="card-body">
@@ -61,13 +67,31 @@
           </div>
         </div>
 
+        <div id="loan-alert-container"></div>
+
         <div class="card-footer">
-          <button th:if="${book.loanStatus.available}" class="btn btn-primary">Buch ausleihen</button>
-          <button th:unless="${book.loanStatus.available}" class="btn btn-secondary" disabled>Nicht verfügbar</button>
+          <button
+              id="borrow-button"
+              th:if="${book.loanStatus.available}"
+              th:disabled="${isLibrarian}"
+              type="button"
+              class="btn btn-primary"
+              th:data-isbn="${book.isbn}">
+            Buch ausleihen
+          </button>
+          <button
+              id="borrow-button-disabled"
+              th:unless="${book.loanStatus.available}"
+              class="btn btn-secondary"
+              disabled>
+            Nicht verfügbar
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script th:src="@{/js/book-detail.js}"></script>
 </body>
 </html>

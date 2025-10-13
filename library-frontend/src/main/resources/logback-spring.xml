@@ -8,10 +8,10 @@
     </encoder>
   </appender>
 
-  <!-- Logging Levels -->
+  <!-- Logging Levels
   <logger name="org.kergru" level="WARN"/>
   <logger name="org.springframework" level="WARN"/>
-
+-->
   <!-- Root Logger -->
   <root level="WARN">
     <appender-ref ref="CONSOLE"/>
