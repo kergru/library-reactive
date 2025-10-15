@@ -125,7 +125,7 @@ sequenceDiagram
 
 %% 2. Protected Resource Access
     User->>+Frontend: 13. Requests another protected page
-    Note left of User: GET /library/ui/page<br>Cookie: JSESSIONID=...
+    Note left of User: GET /library/ui/page<br>Cookie: SESSION=...
 
     Frontend->>+Frontend: 14. Get access_token from session
     Frontend->>+Backend: 15. Request protected resource from backend
